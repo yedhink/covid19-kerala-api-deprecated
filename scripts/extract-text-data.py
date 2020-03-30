@@ -48,28 +48,10 @@ def extract_text_data(latest_pdf):
                 lines = ""
             else:
                 lines += char
-    x = "\n".join(data).split("\n")
-    index = 0
-    matches = []
-    while index < len(x):
-        if "Annexure -1" in x[index]:
-            matches.append(x[index+10:index+25])
-            index+=27
-        elif "District wise" in x[index]:
-            for j in range(index,len(x)):
-                if "Total" in x[j]:
-                    matches.append(x[index+2:j+1])
-                    index = len(x)
-                    break
-        index+= 1
-    # this is a much more efficient and consistent way to extract data.
-    # diregarding as of now since I wasnt able to match with the regex alone
-    # matches = re.findall(r'((.*\n){14}).*Total', "\n".join(data))
-    # for index, i in enumerate(re.findall(r'.*Total.*', "\n".join(data))):
-    #     x = "\n".join(matches[index]).split("\n")[:14]
-    #     x.append("".join(i))
-    #     matches[index] = x
-    return matches[0], matches[1]
+
+    # pure regex witchcraftery - currently gets annex1 and district wise tables
+    matches = re.findall(r'(((.*\n){14}).*Total.*)', "\n".join(data))
+    return matches[0][0].split("\n"), matches[1][0].split("\n")
 
 
 def init():
@@ -92,4 +74,5 @@ if __name__ == "__main__":
         print("\n".join(district_data))
         exit(0)
     process_annex1(annex1_data)
+    # process_district(district_data)
     print(js.toJSON())

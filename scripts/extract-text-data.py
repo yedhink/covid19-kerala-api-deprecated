@@ -13,7 +13,34 @@ class JsonObject:
 
 js = JsonObject()
 
-# def process_district(district_data):
+def process_district(district_data):
+    next = []
+    continuation = False
+    for row in district_data:
+        cols = row.split()
+        print(f"Current : {cols} , next : {next}")
+        if cols[0].isnumeric():
+            # the value is part of district in next line
+            if cols[-1].isnumeric():
+                continuation = True
+            next.extend(cols)
+        else:
+            if next != [] and continuation:
+                x = cols[:-1]
+                x.extend(next)
+                x.append(cols[-1])
+                cols = x
+                continuation = False
+            elif cols[-1].isnumeric():
+                cols.append(0)
+            elif cols[-1] == '-':
+                cols[-1] = 0
+            else:
+                cols.extend(next)
+            district = cols[0]
+            next = []
+            print(cols)
+            # getattr(js, district)["no_of_positive_cases_admitted"] = int(item)
 
 def process_annex1(annexure_1_data):
     for row in annexure_1_data:
@@ -49,7 +76,6 @@ def extract_text_data(latest_pdf):
                 lines = ""
             else:
                 lines += char
-
     # pure regex witchcraftery - currently captures annex1 and district wise tables
     annex1 = re.findall(r'Annexure -1.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     district = re.findall(r'District wise.*District..(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
@@ -76,5 +102,5 @@ if __name__ == "__main__":
         print("\n".join(district_data))
         exit(0)
     process_annex1(annex1_data)
-    # process_district(district_data)
-    print(js.toJSON())
+    process_district(district_data)
+    # print(js.toJSON())

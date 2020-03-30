@@ -21,16 +21,16 @@ def process_annex1(data):
         for i, item in enumerate(cols[1:]):
             if i == 1:
                 getattr(js, district)[
-                    "no_of_persons_under_observation_as_on_today"] = item
+                    "no_of_persons_under_observation_as_on_today"] = int(item)
             elif i == 2:
                 getattr(js, district)[
-                    "no_of_persons_under_home_isolation_as_on_today"] = item
+                    "no_of_persons_under_home_isolation_as_on_today"] = int(item)
             elif i == 3:
                 getattr(js, district)[
-                    "no_of_symptomatic_persons_hospitalized_as_on_today"] = item
+                    "no_of_symptomatic_persons_hospitalized_as_on_today"] = int(item)
             else:
                 getattr(js, district)[
-                    "no_of_persons_hospitalized_today"] = item
+                    "no_of_persons_hospitalized_today"] = int(item)
 
 
 def extract_text_data(latest_pdf):

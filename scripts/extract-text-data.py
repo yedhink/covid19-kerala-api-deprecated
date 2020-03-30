@@ -13,6 +13,7 @@ class JsonObject:
 
 js = JsonObject()
 
+# def process_district(district_data):
 
 def process_annex1(annexure_1_data):
     for row in annexure_1_data:
@@ -49,9 +50,10 @@ def extract_text_data(latest_pdf):
             else:
                 lines += char
 
-    # pure regex witchcraftery - currently gets annex1 and district wise tables
-    matches = re.findall(r'(((.*\n){14}).*Total.*)', "\n".join(data))
-    return matches[0][0].split("\n"), matches[1][0].split("\n")
+    # pure regex witchcraftery - currently captures annex1 and district wise tables
+    annex1 = re.findall(r'Annexure -1.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
+    district = re.findall(r'District wise.*District..(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
+    return "".join(annex1[0]).split("\n")[:-1], "".join(district[0]).split("\n")[:-1]
 
 
 def init():

@@ -2,11 +2,12 @@ import pdftotext
 import glob
 import os
 import json
+import argparse
 
 
 class JsonObject:
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=False, indent=4)
 
 
 js = JsonObject()
@@ -50,8 +51,22 @@ def extract_text_data(latest_pdf):
     return data
 
 
+def init():
+    parser = argparse.ArgumentParser()
+    # parser.add_argument("square", type=int, help="display a square of a given number")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="show the extracted text")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
+    args = init()
     latest_pdf = max(glob.iglob("../data/*.pdf"), key=os.path.getctime)
     text_data = extract_text_data(latest_pdf)
+    if args.verbose:
+        print(f"filename : {latest_pdf}")
+        for i, line in enumerate(text_data):
+            print(f"{i}) {line}")
+            exit(0)
     process_annex1(text_data)
     print(js.toJSON())

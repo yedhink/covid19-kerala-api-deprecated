@@ -3,6 +3,7 @@ import glob
 import os
 import json
 import argparse
+import re
 
 
 class JsonObject:
@@ -13,9 +14,8 @@ class JsonObject:
 js = JsonObject()
 
 
-def process_annex1(data):
-    annexure_1 = data[16:31]
-    for row in annexure_1:
+def process_annex1(annexure_1_data):
+    for row in annexure_1_data:
         cols = row.split()
         district = cols[0].lower()
         setattr(js, district, {})
@@ -48,25 +48,48 @@ def extract_text_data(latest_pdf):
                 lines = ""
             else:
                 lines += char
-    return data
+    x = "\n".join(data).split("\n")
+    index = 0
+    matches = []
+    while index < len(x):
+        if "Annexure -1" in x[index]:
+            matches.append(x[index+10:index+25])
+            index+=27
+        elif "District wise" in x[index]:
+            for j in range(index,len(x)):
+                if "Total" in x[j]:
+                    matches.append(x[index+2:j+1])
+                    index = len(x)
+                    break
+        index+= 1
+    # this is a much more efficient and consistent way to extract data.
+    # diregarding as of now since I wasnt able to match with the regex alone
+    # matches = re.findall(r'((.*\n){14}).*Total', "\n".join(data))
+    # for index, i in enumerate(re.findall(r'.*Total.*', "\n".join(data))):
+    #     x = "\n".join(matches[index]).split("\n")[:14]
+    #     x.append("".join(i))
+    #     matches[index] = x
+    return matches[0], matches[1]
 
 
 def init():
     parser = argparse.ArgumentParser()
-    # parser.add_argument("square", type=int, help="display a square of a given number")
+    parser.add_argument("-t", "--text", action="store_true",
+                        help="display only the extracted text and exit")
     parser.add_argument("-v", "--verbose", action="store_true",
-                        help="show the extracted text")
+                        help="show the details about the file")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = init()
     latest_pdf = max(glob.iglob("../data/*.pdf"), key=os.path.getctime)
-    text_data = extract_text_data(latest_pdf)
+    annex1_data, district_data = extract_text_data(latest_pdf)
     if args.verbose:
-        print(f"filename : {latest_pdf}")
-        for i, line in enumerate(text_data):
-            print(f"{i}) {line}")
-            exit(0)
-    process_annex1(text_data)
+        print(f"filename : {latest_pdf} with length : {len(text_data)}")
+    if args.text:
+        print("\n".join(annex1_data))
+        print("\n".join(district_data))
+        exit(0)
+    process_annex1(annex1_data)
     print(js.toJSON())

@@ -107,9 +107,10 @@ if __name__ == "__main__":
     if args.verbose:
         print(f"filename : {latest_pdf} with length : {len(text_data)}")
     if args.text:
-        print("\n".join(annex1_data))
-        print("\n".join(district_data))
+        print("{:{}}Annex1\n{:=<{}}\n{}\n\n".format('',len(annex1_data[0])//2,'',len(annex1_data[0]),'\n'.join(annex1_data)))
+        print("{:{}}Distirct Wise\n{:=<{}}\n{}\n\n".format('',len(district_data[0])//2-5,'',len(district_data[0]),'\n'.join(district_data)))
+        # print(f"\t\tDistrict Wise\n{'\n'.join(district_data)}")
         exit(0)
     process_annex1(annex1_data)
     process_district(district_data)
-    # print(js.toJSON())
+    print(js.toJSON())

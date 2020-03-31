@@ -5,12 +5,12 @@ import json
 import argparse
 import re
 from itertools import chain
+import io, json
 
 
 class JsonObject:
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=False, indent=4)
-
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=False, indent=4, ensure_ascii=False)
 
 js = JsonObject()
 
@@ -97,6 +97,10 @@ def init():
                         help="display only the extracted text and exit")
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="show the details about the file")
+    parser.add_argument("-j", "--jsontext", action="store_true",
+                        help="show the final json content")
+    parser.add_argument("-w", "--write", action="store_true",
+                        help="overwrite the ../data/data.json file with latest pdf content")
     return parser.parse_args()
 
 
@@ -104,13 +108,15 @@ if __name__ == "__main__":
     args = init()
     latest_pdf = max(glob.iglob("../data/*.pdf"), key=os.path.getctime)
     annex1_data, district_data = extract_text_data(latest_pdf)
+    process_annex1(annex1_data)
+    process_district(district_data)
     if args.verbose:
         print(f"filename : {latest_pdf} with length : {len(text_data)}")
     if args.text:
         print("{:{}}Annex1\n{:=<{}}\n{}\n\n".format('',len(annex1_data[0])//2,'',len(annex1_data[0]),'\n'.join(annex1_data)))
         print("{:{}}Distirct Wise\n{:=<{}}\n{}\n\n".format('',len(district_data[0])//2-5,'',len(district_data[0]),'\n'.join(district_data)))
-        # print(f"\t\tDistrict Wise\n{'\n'.join(district_data)}")
-        exit(0)
-    process_annex1(annex1_data)
-    process_district(district_data)
-    print(js.toJSON())
+    if args.jsontext:
+        print(js.toJSON())
+    if args.write:
+        with io.open('../data/data.json', 'w', encoding='utf-8') as f:
+            f.write(js.toJSON())

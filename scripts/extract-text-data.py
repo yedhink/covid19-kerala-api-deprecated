@@ -12,14 +12,26 @@ class JsonObject:
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=False, indent=4, ensure_ascii=False)
 
+# global json object which helps in serializing the raw content into json
 js = JsonObject()
 
 def process_district(district_data):
+    """
+    param : list containing the lines of the table "District wise distribution"
+    note  : each key in the js class instance "district" is the column heading
+            of the table
+    """
     next = []
     continuation = False
     data = []
     for row in district_data:
+        # regex magic to capture district,no of pos cases and other districts
         t = re.findall(r'(?:\s+)([a-zA-Z]+)?\s+(\d+)?\s*(\w.*)?', row)
+        """
+        the table contains column data split all over the place.
+        the following chunks of code tries to put everything in the
+        right place and create a list in ordered fashion
+        """
         if t[0][0] == '':
             next.extend(t[0][1])
             next.extend(list(chain(*[tmp.split() for tmp in t[0][2].split(',')])))
@@ -52,6 +64,11 @@ def process_district(district_data):
 
 
 def process_annex1(annexure_1_data):
+    """
+    param : list containing the lines of the table
+    note  : each key in the js class instance "district" is the column heading
+            of the table
+    """
     for row in annexure_1_data:
         cols = row.split()
         district = cols[0].lower()
@@ -85,7 +102,7 @@ def extract_text_data(latest_pdf):
                 lines = ""
             else:
                 lines += char
-    # pure regex witchcraftery - currently captures annex1 and district wise tables
+    # pure regex witchcraftery - currently captures annex1 and district wise tables contents
     annex1 = re.findall(r'Annexure -1.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     district = re.findall(r'District wise.*District..(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     return "".join(annex1[0]).split("\n")[:-1], "".join(district[0]).split("\n")[:-1]
@@ -120,3 +137,5 @@ if __name__ == "__main__":
     if args.write:
         with io.open('../data/data.json', 'w', encoding='utf-8') as f:
             f.write(js.toJSON())
+        exit(0)
+    print("No new content written to data.json. Try python3 extract-textdata.py --help")

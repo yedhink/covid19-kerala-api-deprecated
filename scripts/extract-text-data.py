@@ -17,8 +17,13 @@ def process_district(district_data):
     next = []
     continuation = False
     for row in district_data:
-        cols = row.split()
-        print(f"Current : {cols} , next : {next}")
+        # cols = row.split()
+        # print(f"Current : {cols} , next : {next}")
+        # t = re.findall(r'(?:\s+)([a-zA-Z]*|[a-zA-Z0-9, ]*)\s+(\d+)\s+|$([a-zA-Z0-9 ]+|$)', row)
+        t = re.findall(r'(?:\s+)([a-zA-Z]+)?\s+(\d+(?:$))?\s*(\w.*)?', row)
+        print(t)
+        cols = row[:-15].split()
+        [cols.extend(i) for i in [x.strip().split() for x in row[-15:].split(',')]]
         if cols[0].isnumeric():
             # the value is part of district in next line
             if cols[-1].isnumeric():
@@ -39,7 +44,7 @@ def process_district(district_data):
                 cols.extend(next)
             district = cols[0]
             next = []
-            print(cols)
+            # print(cols)
             # getattr(js, district)["no_of_positive_cases_admitted"] = int(item)
 
 def process_annex1(annexure_1_data):

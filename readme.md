@@ -2,6 +2,7 @@
 * allow querying keys with say TVm or 01 as in KL 01 for thiruvananthapuram
 * import only necessary items
 * redo the verbose flag such that printing in loops etc are possible
+* change loop in extract_text_data func into for page in pdf:
 
 # Features
 * auto parsing the data from dhs. this feature is very much in the **experimental** stage, since conversion of the pdf to text may not be that consistent.
@@ -11,3 +12,6 @@ My idea is to purely technical. I propose to create an API for tracking the coro
 
 # Use Case
 The primary use case is to make easier accessibility and availability of the real time data to developers such that they could easily query and make of this API in their applications. Also this API can enable people to develop applications which can show the realtime "Covid-19 Kerala Infection Map" or "Covid19 Kerala Tracker". This will be very useful for people who have to go out for work or even police officials. With such an application people could easily lookup a place and understand where they can safely go and not go. Currently i propose to make the api, then I can move on to developing the above mentioned application if you provide support.
+
+# web scraper
+* the dhs kerala website is too slow to load up. thus querying time using scraper too increased

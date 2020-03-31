@@ -1,3 +1,14 @@
+"""
+Rustic python sphagetti code turned into ART!!!
+usage: extract-text-data.py [-h] [-t] [-v] [-j] [-w]
+
+optional arguments:
+-h, --help      show this help message and exit
+-t, --text      display only the extracted text and exit
+-v, --verbose   show the details about the file
+-j, --jsontext  show the final json content
+-w, --write     overwrite the ../data/data.json file with latest pdf content
+"""
 import pdftotext
 import glob
 import os

@@ -17,36 +17,39 @@ js = JsonObject()
 def process_district(district_data):
     next = []
     continuation = False
+    data = []
     for row in district_data:
-        # cols = row.split()
-        # print(f"Current : {cols} , next : {next}")
-        # t = re.findall(r'(?:\s+)([a-zA-Z]*|[a-zA-Z0-9, ]*)\s+(\d+)\s+|$([a-zA-Z0-9 ]+|$)', row)
-        t = re.findall(r'(?:\s+)([a-zA-Z]+)?\s+(\d+(?:$))?\s*(\w.*)?', row)
-        print(t)
-        cols = row[:-15].split()
-        [cols.extend(i) for i in [x.strip().split() for x in row[-15:].split(',')]]
-        if cols[0].isnumeric():
-            # the value is part of district in next line
-            if cols[-1].isnumeric():
+        t = re.findall(r'(?:\s+)([a-zA-Z]+)?\s+(\d+)?\s*(\w.*)?', row)
+        if t[0][0] == '':
+            next.extend(t[0][1])
+            next.extend(list(chain(*[tmp.split() for tmp in t[0][2].split(',')])))
+            if next[-1].isnumeric():
                 continuation = True
-            next.extend(cols)
         else:
             if next != [] and continuation:
-                x = cols[:-1]
+                next.append(t[0][2])
+                x = list(t[0])
+                x.pop()
                 x.extend(next)
-                x.append(cols[-1])
-                cols = x
+                data.append(x)
                 continuation = False
-            elif cols[-1].isnumeric():
-                cols.append(0)
-            elif cols[-1] == '-':
-                cols[-1] = 0
+                next = []
+                continue
+            if t[0][2] == '':
+                data.append([t[0][0],t[0][1]])
             else:
-                cols.extend(next)
-            district = cols[0]
-            next = []
-            # print(cols)
-            # getattr(js, district)["no_of_positive_cases_admitted"] = int(item)
+                next.extend(list(chain(*[tmp.split() for tmp in t[0][2].split(',')])))
+                x = [t[0][0],t[0][1]]
+                x.extend(next)
+                data.append(x)
+                next=[]
+    for cols in data:
+        district = cols[0].lower()
+        getattr(js, district)["no_of_positive_cases_admitted"] = int(cols[1])
+        getattr(js, district)["other_districts"] = {}
+        for i in range(2,2+len(cols[2:]),2):
+            getattr(js, district)["other_districts"][cols[i+1].lower()] = int(cols[i])
+
 
 def process_annex1(annexure_1_data):
     for row in annexure_1_data:

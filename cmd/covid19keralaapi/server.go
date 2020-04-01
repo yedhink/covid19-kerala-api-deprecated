@@ -60,7 +60,7 @@ func main() {
 		The only possible returned error is ErrBadPattern, when pattern is malformed.
 	*/
 	files, err := filepath.Glob("data/*.pdf")
-	if err != nil {
+	if err != nil || len(files) == 0{
 		fmt.Println(err)
 		os.Exit(1)
 	}

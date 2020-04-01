@@ -4,6 +4,7 @@
 * redo the verbose flag such that printing in loops etc are possible
 * change loop in extract_text_data func into for page in pdf:
 * in server currently we compare if the file is latest from remote by checking the filename vs title. but there might
+    occur a problem when more than one file is uploaded in same day
 
 # Features
 * auto parsing the data from dhs. this feature is very much in the **experimental** stage, since conversion of the pdf to text may not be that consistent.

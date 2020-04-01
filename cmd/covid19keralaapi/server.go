@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/anaskhan96/soup"
+	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
 )
 
 type Scraper interface {
@@ -21,17 +21,7 @@ type Website struct {
 	latestPDFFileURL string
 }
 
-func Scrape(base string, route string,attr string,className string) soup.Root {
-	resp, err := soup.Get(base + route)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	doc :=  soup.HTMLParse(resp)
-	return doc.Find(attr, "class", className).Find("a")
-}
-
-func (w *Website) GetLatestPDF(c chan string) {
+func (w *Website) GetLatestPDF() (string){
 	links := Scrape(w.baseURL, w.bulletinPageURL,"div","entry-content")
 	w.latestPDFFileURL = links.Attrs()["href"]
 	c <- w.baseURL + w.latestPDFFileURL
@@ -44,14 +34,14 @@ func (w *Website) GetMainPage(c chan [2]string) {
 	c <- [2]string{latestFileName, bulletinPage}
 }
 
-func main() {
+	return w.baseURL + w.latestPDFFileURL
 	var website = &Website{
 		baseURL: "http://dhs.kerala.gov.in",
-		mainPageURL: `/%e0%b4%a1%e0%b5%86%e0%b4%af%e0%b4%bf%e0%b4%b2%e0%b4%bf-` +
+func (w *Website) GetMainPage() ([2]string){
 			`%e0%b4%ac%e0%b5%81%e0%b4%b3%e0%b5%8d%e0%b4%b3%e0%b4%b1` +
 			`%e0%b5%8d%e0%b4%b1%e0%b4%bf%e0%b4%a8%e0%b5%8d%e2%80%8d/`,
 	}
-	var sc Scraper = website
+	return [2]string{latestFileName, bulletinPage}
 
 	/*
 		Glob ignores file system errors such as I/O errors reading directories.
@@ -76,5 +66,5 @@ func main() {
 			go sc.GetLatestPDF(chan2)
 			fmt.Printf("lastest file : %s\n",<-chan2)
 		}
-	}
-}
+		website.bulletinPageURL = res[1]
+			fmt.Printf("lastest file : %s\n",sc.GetLatestPDF())

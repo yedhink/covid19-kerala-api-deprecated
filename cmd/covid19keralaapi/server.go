@@ -21,26 +21,24 @@ type Website struct {
 	latestPDFFileURL string
 }
 
-func Scrape(base string, route string) soup.Root {
+func Scrape(base string, route string,attr string,className string) soup.Root {
 	resp, err := soup.Get(base + route)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	return soup.HTMLParse(resp)
+	doc :=  soup.HTMLParse(resp)
+	return doc.Find(attr, "class", className).Find("a")
 }
 
 func (w *Website) GetLatestPDF(c chan string) {
-	doc := Scrape(w.baseURL, w.bulletinPageURL)
-	fmt.Printf("bullet url : %s\n",w.bulletinPageURL)
-	links := doc.Find("div", "class", "entry-content").Find("a")
+	links := Scrape(w.baseURL, w.bulletinPageURL,"div","entry-content")
 	w.latestPDFFileURL = links.Attrs()["href"]
 	c <- w.baseURL + w.latestPDFFileURL
 }
 
 func (w *Website) GetMainPage(c chan [2]string) {
-	doc := Scrape(w.baseURL, w.mainPageURL)
-	links := doc.Find("h3", "class", "entry-title").Find("a")
+	links := Scrape(w.baseURL, w.mainPageURL,"h3","entry-title")
 	latestFileName := "data/" + strings.ReplaceAll(links.Text(), "/", "-") + ".pdf"
 	bulletinPage := links.Attrs()["href"]
 	c <- [2]string{latestFileName, bulletinPage}
@@ -48,8 +46,8 @@ func (w *Website) GetMainPage(c chan [2]string) {
 
 func main() {
 	var website = &Website{
-		baseURL: "http://dhs.kerala.gov.in/",
-		mainPageURL: `%e0%b4%a1%e0%b5%86%e0%b4%af%e0%b4%bf%e0%b4%b2%e0%b4%bf-` +
+		baseURL: "http://dhs.kerala.gov.in",
+		mainPageURL: `/%e0%b4%a1%e0%b5%86%e0%b4%af%e0%b4%bf%e0%b4%b2%e0%b4%bf-` +
 			`%e0%b4%ac%e0%b5%81%e0%b4%b3%e0%b5%8d%e0%b4%b3%e0%b4%b1` +
 			`%e0%b5%8d%e0%b4%b1%e0%b4%bf%e0%b4%a8%e0%b5%8d%e2%80%8d/`,
 	}

@@ -23,7 +23,7 @@ func (w *Website) GetLatestPDF() (string){
 
 func (w *Website) GetMainPage() ([2]string){
 	links := Scrape(w.baseURL, w.mainPageURL,"h3","entry-title")
-	latestFileName := "data/" + strings.ReplaceAll(links.Text(), "/", "-") + ".pdf"
+	latestFileName := strings.ReplaceAll(links.Text(), "/", "-") + ".pdf"
 	bulletinPage := links.Attrs()["href"]
 	return [2]string{latestFileName, bulletinPage}
 }
@@ -36,8 +36,8 @@ func main() {
 			`%e0%b5%8d%e0%b4%b1%e0%b4%bf%e0%b4%a8%e0%b5%8d%e2%80%8d/`,
 	}
 	var sc Scraper = website
-	var st = Storage{
-		Path : "data/",
+	var st = &Storage{
+		BasePath : "data/",
 	}
 
 	files := st.LocalPDFName()
@@ -48,8 +48,10 @@ func main() {
 		if f == res[0] {
 			fmt.Println("The pdf file is already latest")
 		} else {
+			st.RemoteFileName = res[0]
 			fmt.Printf("You need latest pdf file : %s(local) != %s(remote)\n", f, res[0])
 			fmt.Printf("lastest file : %s\n",sc.GetLatestPDF())
+			st.Download()
 		}
 	}
 }

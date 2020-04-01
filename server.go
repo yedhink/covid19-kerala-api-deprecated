@@ -20,13 +20,17 @@ type Website struct {
 	bulletinPageURL string
 }
 
-func (w Website) GetMainPage(c chan [2]string) {
+func Scrape(w Website) (soup.Root) {
 	resp, err := soup.Get(w.baseURL + w.mainPageURL)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	doc := soup.HTMLParse(resp)
+	return soup.HTMLParse(resp)
+}
+
+func (w Website) GetMainPage(c chan [2]string) {
+	doc := Scrape(w)
 	links := doc.Find("h3", "class", "entry-title").Find("a")
 	latestFileName := "data/" + strings.ReplaceAll(links.Text(), "/", "-") + ".pdf"
 	bulletinPage := links.Attrs()["href"]

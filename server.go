@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/anaskhan96/soup"
@@ -19,6 +20,6 @@ func ScrapeDHSKerala() (string) {
 	return strings.ReplaceAll(links.Text(),"/","-")+".pdf"
 }
 
-func main() {
+	files, err := filepath.Glob("data/*.pdf")
 	fmt.Println(ScrapeDHSKerala())
 }

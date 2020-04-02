@@ -29,7 +29,7 @@ func (s *Storage) LocalPDFName() []string{
 	// The only possible returned error is ErrBadPattern, when pattern is malformed.
 	files, err := filepath.Glob(s.BasePath+"*.pdf")
 	if err != nil || len(files) == 0{
-		fmt.Println(err)
+		fmt.Printf("glob error : no local pdf file exists in %s\n",s.BasePath)
 		os.Exit(1)
 	}
 	s.LocalFilePath = files[0]

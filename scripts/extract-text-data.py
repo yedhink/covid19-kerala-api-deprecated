@@ -36,20 +36,33 @@ def process_district(district_data):
     continuation = False
     data = []
     for row in district_data:
+        """
+        I really hope the district wise data table in the pdf uploaded in the
+        site has some form of consistency in the future...
+        """
+
         # regex magic to capture district,no of pos cases and other districts
-        t = re.findall(r'(?:\s+)?([a-zA-Z]+)?\s+(\d+)?\s*(\w.*)?', row)
+        t = re.findall(r'(?:\s+)?([a-zA-Z]+)?\s*(\d+)?\s*(\w.*)?', row)
         """
         the table contains column data split all over the place.
         the following chunks of code tries to put everything in the
-        right place and create a list in ordered fashion
+        right place and create a list in ordered fashion using if-else hell
         """
         if t[0][0] == '':
-            next.extend(t[0][1])
-            next.extend(list(chain(*[tmp.split() for tmp in t[0][2].split(',')])))
+            if t[0][1].isnumeric():
+                next = [t[0][1]]
+            else:
+                next.extend(t[0][1])
+            if t[0][2] != '':
+                next.extend(list(chain(*[tmp.split() for tmp in t[0][2].split(',')])))
             if next[-1].isnumeric():
                 continuation = True
         else:
-            if next != [] and continuation:
+            dummy = t[0][1]
+            if t[0][1] == '' and t[0][2] == '':
+                dummy = next[0]
+                next =[]
+            elif next != [] and continuation:
                 next.append(t[0][2])
                 x = list(t[0])
                 x.pop()
@@ -59,7 +72,7 @@ def process_district(district_data):
                 next = []
                 continue
             if t[0][2] == '':
-                data.append([t[0][0],t[0][1]])
+                data.append([t[0][0],dummy])
             else:
                 next.extend(list(chain(*[tmp.split() for tmp in t[0][2].split(',')])))
                 x = [t[0][0],t[0][1]]
@@ -114,7 +127,7 @@ def extract_text_data(latest_pdf):
             else:
                 lines += char
     # pure regex witchcraftery - currently captures annex1 and district wise tables contents
-    annex1 = re.findall(r'Annexure -1.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
+    annex1 = re.findall(r'Annexure -1: Details of.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     district = re.findall(r'District wise.*District..(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     return "".join(annex1[0]).split("\n")[:-1], "".join(district[0]).split("\n")[:-1]
 

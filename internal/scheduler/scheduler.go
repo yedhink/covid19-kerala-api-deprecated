@@ -50,6 +50,7 @@ func execScript(program string, script string) {
 
 func BackgroundDaemon(){
 	file := st.LocalPDFName()
+	fmt.Println("Requesting data from dhs kerala website....")
 	res := sc.GetMainPage()
 	website.BulletinPageURL = res[1]
 	if file == st.BasePath+res[0] {

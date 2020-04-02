@@ -23,11 +23,10 @@ func (s Storage) Download() {
 	}
 }
 
+// LocalPDFName retrieves the local pdf file from "data" dir
 func (s *Storage) LocalPDFName() []string{
-	/*
-		Glob ignores file system errors such as I/O errors reading directories.
-		The only possible returned error is ErrBadPattern, when pattern is malformed.
-	*/
+	// Glob ignores file system errors such as I/O errors reading directories.
+	// The only possible returned error is ErrBadPattern, when pattern is malformed.
 	files, err := filepath.Glob(s.BasePath+"*.pdf")
 	if err != nil || len(files) == 0{
 		fmt.Println(err)

@@ -37,7 +37,7 @@ def process_district(district_data):
     data = []
     for row in district_data:
         # regex magic to capture district,no of pos cases and other districts
-        t = re.findall(r'(?:\s+)([a-zA-Z]+)?\s+(\d+)?\s*(\w.*)?', row)
+        t = re.findall(r'(?:\s+)?([a-zA-Z]+)?\s+(\d+)?\s*(\w.*)?', row)
         """
         the table contains column data split all over the place.
         the following chunks of code tries to put everything in the

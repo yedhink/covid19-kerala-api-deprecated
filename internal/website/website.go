@@ -9,13 +9,13 @@ type Website struct {
 	BaseURL          string
 	MainPageURL      string
 	BulletinPageURL  string
-	LatestPDFFileURL string
+	LatestPDFURL string
 }
 
 func (w *Website) GetLatestPDF() (string){
 	links := Scrape(w.BaseURL, w.BulletinPageURL,"div","entry-content")
-	w.LatestPDFFileURL = links.Attrs()["href"]
-	return w.BaseURL + w.LatestPDFFileURL
+	w.LatestPDFURL = links.Attrs()["href"]
+	return w.BaseURL + w.LatestPDFURL
 }
 
 func (w *Website) GetMainPage() ([2]string){

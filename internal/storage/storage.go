@@ -28,10 +28,15 @@ func (s *Storage) LocalPDFName() string{
 	// Glob ignores file system errors such as I/O errors reading directories.
 	// The only possible returned error is ErrBadPattern, when pattern is malformed.
 	files, err := filepath.Glob(s.BasePath+"*.pdf")
-	if err != nil || len(files) == 0{
+	if err != nil {
 		fmt.Printf("glob error : no local pdf file exists in %s\n",s.BasePath)
 		os.Exit(1)
 	}
-	s.LocalFilePath = files[0]
+	if len(files) == 0{
+		fmt.Println("since no pdf file exists - directly download the latest file")
+		s.LocalFilePath = "data/01-04-2020.pdf"
+	} else {
+		s.LocalFilePath = files[0]
+	}
 	return s.LocalFilePath
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 
 	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
@@ -33,6 +34,14 @@ func main() {
 		err := website.Download(st)
 		if err != nil {
 			fmt.Println(err)
+		} else {
+			// hardcoded since the scripts dir under pipenv
+			cmd := exec.Command("python3", "scripts/extract-text-data.py","-w")
+			out, err := cmd.CombinedOutput()
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Printf("%s", out)
 		}
 	}
 }

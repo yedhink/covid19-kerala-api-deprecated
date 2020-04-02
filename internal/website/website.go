@@ -3,6 +3,7 @@ package website
 import (
 	"strings"
 	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
+	storage "github.com/yedhink/covid19-kerala-api/internal/storage"
 )
 
 type Website struct {
@@ -24,3 +25,4 @@ func (w *Website) GetMainPage() ([2]string){
 	bulletinPage := links.Attrs()["href"]
 	return [2]string{latestFileName, bulletinPage}
 }
+	st.Delete()

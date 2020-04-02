@@ -31,7 +31,10 @@ func main() {
 			st.RemoteFileName = res[0]
 			fmt.Printf("You need latest pdf file : %s(local) != %s(remote)\n", f, res[0])
 			fmt.Printf("lastest file : %s\n",sc.GetLatestPDF())
-			st.Download()
+			err := website.Download(st)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 	}
 }

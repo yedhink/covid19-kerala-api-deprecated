@@ -13,7 +13,7 @@ type Storage struct {
 }
 
 
-func (s Storage) Download() {
+func (s Storage) Delete() {
 	var err = os.Remove(s.LocalFilePath)
 	if err != nil {
 		fmt.Printf("os.remove error\t: was not able to delete %s\nEXITING....\n",s.LocalFilePath)

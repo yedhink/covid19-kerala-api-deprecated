@@ -7,7 +7,25 @@ import (
 	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 	. "github.com/yedhink/covid19-kerala-api/internal/website"
+	"github.com/robfig/cron/v3"
 )
+
+type Scheduler struct {
+	Spec string
+}
+
+func (s Scheduler) Schedule(){
+	c := cron.New()
+	id,err := c.AddFunc(s.Spec, BackgroundDaemon)
+	if err != nil{
+		fmt.Printf("cron error : nothing scheduled %v\n",err)
+		return
+	} else {
+		fmt.Printf("cron scheduled to run with spec %s and id %v\n",s.Spec,id)
+	}
+	c.Run()
+	select {}
+}
 
 var website = &Website{
 	BaseURL: "http://dhs.kerala.gov.in",

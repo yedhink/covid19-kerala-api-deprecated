@@ -7,7 +7,7 @@ optional arguments:
 -t, --text      display only the extracted text and exit
 -v, --verbose   show the details about the file
 -j, --jsontext  show the final json content
--w, --write     overwrite the ../data/data.json file with latest pdf content
+-w, --write     overwrite the data/data.json file with latest pdf content
 """
 import pdftotext
 import glob
@@ -128,13 +128,13 @@ def init():
     parser.add_argument("-j", "--jsontext", action="store_true",
                         help="show the final json content")
     parser.add_argument("-w", "--write", action="store_true",
-                        help="overwrite the ../data/data.json file with latest pdf content")
+                        help="overwrite the data/data.json file with latest pdf content")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = init()
-    latest_pdf = max(glob.iglob("../data/*.pdf"), key=os.path.getctime)
+    latest_pdf = max(glob.iglob("data/*.pdf"), key=os.path.getctime)
     annex1_data, district_data = extract_text_data(latest_pdf)
     process_annex1(annex1_data)
     process_district(district_data)
@@ -146,7 +146,7 @@ if __name__ == "__main__":
     if args.jsontext:
         print(js.toJSON())
     if args.write:
-        with io.open('../data/data.json', 'w', encoding='utf-8') as f:
+        with io.open('data/data.json', 'w', encoding='utf-8') as f:
             f.write(js.toJSON())
         exit(0)
     print("No new content written to data.json. Try python3 extract-textdata.py --help")

@@ -24,7 +24,7 @@ func (s Storage) Delete() {
 }
 
 // LocalPDFName retrieves the local pdf file from "data" dir
-func (s *Storage) LocalPDFName() []string{
+func (s *Storage) LocalPDFName() string{
 	// Glob ignores file system errors such as I/O errors reading directories.
 	// The only possible returned error is ErrBadPattern, when pattern is malformed.
 	files, err := filepath.Glob(s.BasePath+"*.pdf")
@@ -33,5 +33,5 @@ func (s *Storage) LocalPDFName() []string{
 		os.Exit(1)
 	}
 	s.LocalFilePath = files[0]
-	return files
+	return s.LocalFilePath
 }

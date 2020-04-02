@@ -148,5 +148,6 @@ if __name__ == "__main__":
     if args.write:
         with io.open('data/data.json', 'w', encoding='utf-8') as f:
             f.write(js.toJSON())
+        print("Latest json from the pdf in data/ dir has been written to data/data.json")
         exit(0)
     print("No new content written to data.json. Try python3 extract-textdata.py --help")

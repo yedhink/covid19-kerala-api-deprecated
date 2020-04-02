@@ -20,21 +20,19 @@ func main() {
 		BasePath : "data/",
 	}
 
-	files := st.LocalPDFName()
+	file := st.LocalPDFName()
 
-	for _, f := range files {
-		res := sc.GetMainPage()
-		website.BulletinPageURL = res[1]
-		if f == res[0] {
-			fmt.Println("The pdf file is already latest")
-		} else {
-			st.RemoteFileName = res[0]
-			fmt.Printf("You need latest pdf file : %s(local) != %s(remote)\n", f, res[0])
-			fmt.Printf("lastest file : %s\n",sc.GetLatestPDF())
-			err := website.Download(st)
-			if err != nil {
-				fmt.Println(err)
-			}
+	res := sc.GetMainPage()
+	website.BulletinPageURL = res[1]
+	if file == st.BasePath+res[0] {
+		fmt.Println("The pdf file is already latest")
+	} else {
+		st.RemoteFileName = res[0]
+		fmt.Printf("You need latest pdf file : %s(local) != %s(remote)\n", file, st.BasePath+res[0])
+		fmt.Printf("lastest file : %s\n",sc.GetLatestPDF())
+		err := website.Download(st)
+		if err != nil {
+			fmt.Println(err)
 		}
 	}
 }

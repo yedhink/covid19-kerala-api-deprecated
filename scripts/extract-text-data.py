@@ -105,7 +105,7 @@ def extract_text_data(latest_pdf):
         pdf = pdftotext.PDF(f)
     # Iterate over only the required pages
     data = []
-    for page_num in [2, 3, 4]:
+    for page_num in range(2,len(pdf)):
         lines = ""
         for char in pdf[page_num]:
             if char == '\n':

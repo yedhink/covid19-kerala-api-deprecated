@@ -4,7 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Start() {
+type Server struct {
+	Port int
+	JsonData map[string]interface{}
+}
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{

@@ -36,5 +36,5 @@ func init() {
 		log.Fatal("Error opening file:", err)
 	}
 	mw1 := io.MultiWriter(os.Stdout, fileLog)
-	Log = log.New(mw1, "scheduler running :", log.Ldate|log.Ltime|log.Lshortfile)
+	Log = log.New(mw1, "", log.Ldate|log.Ltime|log.Lshortfile)
 }

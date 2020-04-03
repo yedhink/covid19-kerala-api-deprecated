@@ -2,6 +2,9 @@ package main
 
 import (
 	. "github.com/yedhink/covid19-kerala-api/internal/scheduler"
+	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
+	. "github.com/yedhink/covid19-kerala-api/internal/storage"
+	. "github.com/yedhink/covid19-kerala-api/internal/website"
 	server "github.com/yedhink/covid19-kerala-api/internal/server"
 )
 
@@ -21,6 +24,7 @@ func main() {
 		JsonFileName: "data.json",
 		LocalFileExist: false,
 	}
+
 	c := make(chan bool)
 	scheduler := Scheduler{
 		CronSpec : "* * * * *",
@@ -29,6 +33,8 @@ func main() {
 		Site : website,
 		Chan : c,
 	}
-	go sc.Schedule()
+
+	go scheduler.Schedule()
+	var _ = <-c
 	server.Start()
 }

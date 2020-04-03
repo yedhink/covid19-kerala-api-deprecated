@@ -44,7 +44,7 @@ func (s Scheduler) Schedule(){
 	select {}
 }
 
-func execScript(program string, script string) {
+func (s Scheduler) execScript(program string, script string) {
 	// the program and script locations are hardcoded for now
 	// not platform agnostic at the moment
 	cmd := exec.Command(program, script,"-w")

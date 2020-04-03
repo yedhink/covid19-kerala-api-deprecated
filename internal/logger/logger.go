@@ -9,8 +9,9 @@ import (
 
 var (
 	Log *log.Logger
-	err = color.New(color.FgRed)
-	info = color.New(color.FgGreen).Add(color.BgHiYellow)
+	err = color.New(color.FgWhite).Add(color.BgRed)
+	info = color.New(color.FgHiBlack).Add(color.BgHiYellow)
+	success = color.New(color.FgWhite).Add(color.BgGreen)
 )
 
 func Error(format string,v ...interface{}) string{

@@ -7,7 +7,7 @@ import (
 
 func main() {
 	sc := Scheduler{
-		Spec : "* 18-21 * * *",
+		Spec : "* 18-20 * * *",
 	}
 	sc.Schedule()
 }

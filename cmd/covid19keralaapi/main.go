@@ -11,6 +11,5 @@ func main() {
 		Spec : "* * * * *",
 	}
 	go sc.Schedule()
-	select {}
 	server.Start()
 }

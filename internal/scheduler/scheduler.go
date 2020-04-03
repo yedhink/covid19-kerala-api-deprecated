@@ -40,13 +40,17 @@ func (s Scheduler) Schedule(){
 }
 
 func execScript(program string, script string) {
-	// hardcoded since the scripts dir under pipenv
+	// the program and script locations are hardcoded for now
+	// not platform agnostic at the moment
 	cmd := exec.Command(program, script,"-w")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		Log.Print(Error("Failed to execute exec python script",err))
+		Log.Printf(Error("Failed to execute exec python script %v",err))
+		Log.Printf(Error("python script output : %s", out))
+		Log.Printf(Error("Make sure you've enabled pipenv shell in 'scripts' folder"))
+	} else {
+		Log.Printf(Success("%s", out))
 	}
-	Log.Print(Info("%s", out))
 }
 
 func BackgroundDaemon(){

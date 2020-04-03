@@ -28,14 +28,16 @@ func main() {
 	var server = &Server{
 		Port : 8000,
 	}
+
+	var scheduler = Scheduler{
 		CronSpec : "* * * * *",
 		Sc : scraper,
 		St : storage,
 		Site : website,
-		Chan : c,
+		Server : server,
 	}
 
+
 	go scheduler.Schedule()
-	var _ = <-c
-	server.Start()
+	server.Start(storage)
 }

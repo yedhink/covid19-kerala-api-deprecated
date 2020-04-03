@@ -21,6 +21,8 @@ func main() {
 		JsonFileName: "data.json",
 		LocalFileExist: false,
 	}
+	c := make(chan bool)
+		Chan : c,
 	}
 	go sc.Schedule()
 	server.Start()

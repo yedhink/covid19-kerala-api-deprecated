@@ -22,6 +22,11 @@ func Info(format string,v ...interface{}) string{
 	return info.Sprintf(format, v...)
 }
 
+func Success(format string,v ...interface{}) string{
+	return success.Sprintf(format, v...)
+}
+
+
 func init() {
 	fileLog, err := os.OpenFile("/tmp/covid19-kerala-api.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {

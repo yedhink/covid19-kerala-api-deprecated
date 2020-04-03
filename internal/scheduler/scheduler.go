@@ -3,10 +3,12 @@ package scheduler
 import (
 	"os/exec"
 
+	. "github.com/yedhink/covid19-kerala-api/internal/controller"
+	. "github.com/yedhink/covid19-kerala-api/internal/logger"
 	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
+	. "github.com/yedhink/covid19-kerala-api/internal/server"
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 	. "github.com/yedhink/covid19-kerala-api/internal/website"
-	. "github.com/yedhink/covid19-kerala-api/internal/logger"
 	"github.com/robfig/cron/v3"
 )
 
@@ -18,27 +20,14 @@ type Scheduler struct {
 	Server *Server
 }
 
-var website = &Website{
-	BaseURL: "http://dhs.kerala.gov.in",
-	MainPageURL: `/%e0%b4%a1%e0%b5%86%e0%b4%af%e0%b4%bf%e0%b4%b2%e0%b4%bf-` +
-		`%e0%b4%ac%e0%b5%81%e0%b4%b3%e0%b5%8d%e0%b4%b3%e0%b4%b1` +
-		`%e0%b5%8d%e0%b4%b1%e0%b4%bf%e0%b4%a8%e0%b5%8d%e2%80%8d/`,
-}
-var sc Scraper = website
-var st = &Storage{
-	BasePath : "data/",
-	JsonFileName: "data.json",
-	LocalFileExist: false,
-}
-
 func (s Scheduler) Schedule(){
 	c := cron.New()
-	id,err := c.AddFunc(s.Spec, BackgroundDaemon)
+	id,err := c.AddFunc(s.CronSpec, s.BackgroundDaemon)
 	if err != nil{
 		Log.Printf(Error("cron error : scheduling background daemon failed %v\n",err))
 		return
 	} else {
-		Log.Printf(Success("cron scheduled to run with spec '%s' and id %v\n",s.Spec,id))
+		Log.Printf(Success("cron scheduled to run with spec '%s' and id %v\n",s.CronSpec,id))
 	}
 	c.Run()
 	select {}
@@ -59,23 +48,23 @@ func (s Scheduler) execScript(program string, script string) {
 	}
 }
 
-func BackgroundDaemon(){
-	file := st.LocalPDFName()
+func (s Scheduler) BackgroundDaemon(){
+	file := s.St.LocalPDFName()
 	Log.Printf(Info("Requesting data from dhs kerala website...."))
-	res := sc.GetMainPage()
-	website.BulletinPageURL = res[1]
-	if file == st.BasePath+res[0] {
+	res := s.Sc.GetMainPage()
+	s.Site.BulletinPageURL = res[1]
+	if file == s.St.BasePath+res[0] {
 		Log.Printf(Info("The pdf file is already latest"))
 	} else {
-		st.RemoteFileName = res[0]
-		Log.Printf(Info("You need latest pdf file : %s(local) != %s(remote)\n", file, st.BasePath+res[0]))
-		Log.Printf(Info("lastest file : %s\n",sc.GetLatestPDF()))
-		err := website.Download(st)
+		s.St.RemoteFileName = res[0]
+		Log.Printf(Info("You need latest pdf file : %s(local) != %s(remote)\n", file, s.St.BasePath+res[0]))
+		Log.Printf(Info("lastest file : %s\n",s.Sc.GetLatestPDF()))
+		err := s.Site.Download(s.St)
 		if err != nil {
 			Log.Printf(Error("Download Failed! %v",err))
 		} else {
-			Log.Printf(Success("Downloaded latest pdf file into %s",st.BasePath+st.RemoteFileName))
-			execScript("python3", "scripts/extract-text-data.py")
+			Log.Printf(Success("Downloaded latest pdf file into %s",s.St.BasePath+s.St.RemoteFileName))
+			s.execScript("python3", "scripts/extract-text-data.py")
 		}
 	}
 }

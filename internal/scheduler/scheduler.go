@@ -30,10 +30,10 @@ func (s Scheduler) Schedule(){
 	c := cron.New()
 	id,err := c.AddFunc(s.Spec, BackgroundDaemon)
 	if err != nil{
-		Log.Print(Error("cron error : scheduling background daemon failed %v\n",err))
+		Log.Printf(Error("cron error : scheduling background daemon failed %v\n",err))
 		return
 	} else {
-		Log.Print(Info("cron scheduled to run with spec %s and id %v\n",s.Spec,id))
+		Log.Printf(Success("cron scheduled to run with spec '%s' and id %v\n",s.Spec,id))
 	}
 	c.Run()
 	select {}
@@ -55,19 +55,20 @@ func execScript(program string, script string) {
 
 func BackgroundDaemon(){
 	file := st.LocalPDFName()
-	Log.Print(Info("Requesting data from dhs kerala website...."))
+	Log.Printf(Info("Requesting data from dhs kerala website...."))
 	res := sc.GetMainPage()
 	website.BulletinPageURL = res[1]
 	if file == st.BasePath+res[0] {
-		Log.Print(Info("The pdf file is already latest"))
+		Log.Printf(Info("The pdf file is already latest"))
 	} else {
 		st.RemoteFileName = res[0]
-		Log.Print(Info("You need latest pdf file : %s(local) != %s(remote)\n", file, st.BasePath+res[0]))
-		Log.Print(Info("lastest file : %s\n",sc.GetLatestPDF()))
+		Log.Printf(Info("You need latest pdf file : %s(local) != %s(remote)\n", file, st.BasePath+res[0]))
+		Log.Printf(Info("lastest file : %s\n",sc.GetLatestPDF()))
 		err := website.Download(st)
 		if err != nil {
-			Log.Print(Error("Download Failed!",err))
+			Log.Printf(Error("Download Failed! %v",err))
 		} else {
+			Log.Printf(Success("Downloaded latest pdf file into %s",st.BasePath+st.RemoteFileName))
 			execScript("python3", "scripts/extract-text-data.py")
 		}
 	}

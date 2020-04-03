@@ -44,7 +44,7 @@ func (w *Website) Download(st *storage.Storage) error{
 	}
 	err = ioutil.WriteFile(st.BasePath+st.RemoteFileName, contents, 0644)
 	if err != nil {
-		fmt.Printf("Trouble creating file : %v\n", err)
+		return err
 	}
 	return nil
 }

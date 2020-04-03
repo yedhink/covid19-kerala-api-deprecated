@@ -1,8 +1,8 @@
 package scraper
 
 import (
-	"fmt"
 	"os"
+	. "github.com/yedhink/covid19-kerala-api/internal/logger"
 	"github.com/anaskhan96/soup"
 )
 
@@ -14,7 +14,7 @@ type Scraper interface {
 func Scrape(base string, route string,attr string,className string) soup.Root {
 	resp, err := soup.Get(base + route)
 	if err != nil {
-		fmt.Println(err)
+		Log.Printf(Error("soup GET error : %v", err))
 		os.Exit(1)
 	}
 	doc :=  soup.HTMLParse(resp)

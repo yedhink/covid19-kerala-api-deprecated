@@ -7,10 +7,12 @@
 * extract the no of persons recovered from annex-2
 * add last modified field to json
 * district wise data - check if regex matches like ('','114','32 Ernakulam, 11 kannur') works as expected
+* remove hardcoded unix based paths for being platform-agnostic
 ## GO
 * in server currently we compare if the file is latest from remote by checking the filename vs title. but there might
     occur a problem when more than one file is uploaded in same day
 * server.go line 71 no need for iteration. simply files[0] would do
+* remove hardcoded unix based paths for being platform-agnostic
 
 # Features
 * auto parsing the data from dhs. this feature is very much in the **experimental** stage, since conversion of the pdf to text may not be that consistent.

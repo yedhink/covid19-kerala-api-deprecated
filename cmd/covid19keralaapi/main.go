@@ -22,6 +22,11 @@ func main() {
 		LocalFileExist: false,
 	}
 	c := make(chan bool)
+	scheduler := Scheduler{
+		CronSpec : "* * * * *",
+		Sc : scraper,
+		St : storage,
+		Site : website,
 		Chan : c,
 	}
 	go sc.Schedule()

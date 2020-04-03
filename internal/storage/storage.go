@@ -10,16 +10,18 @@ type Storage struct {
 	BasePath string
 	LocalFilePath string
 	RemoteFileName string
+	LocalFileExist bool
 }
 
 
 func (s Storage) Delete() {
-	var err = os.Remove(s.LocalFilePath)
-	if err != nil {
-		fmt.Printf("os.remove error\t: was not able to delete %s\nEXITING....\n",s.LocalFilePath)
-		os.Exit(0)
-	} else {
-		fmt.Printf("Succesfully removed the local pdf %s\n",s.LocalFilePath)
+	if s.LocalFileExist {
+		var err = os.Remove(s.LocalFilePath)
+		if err != nil {
+			fmt.Printf("os.remove error\t: was not able to delete %s\nEXITING....\n",s.LocalFilePath)
+		} else {
+			fmt.Printf("Succesfully removed the local pdf %s\n",s.LocalFilePath)
+		}
 	}
 }
 
@@ -30,13 +32,13 @@ func (s *Storage) LocalPDFName() string{
 	files, err := filepath.Glob(s.BasePath+"*.pdf")
 	if err != nil {
 		fmt.Printf("glob error : no local pdf file exists in %s\n",s.BasePath)
-		os.Exit(1)
 	}
 	if len(files) == 0{
 		fmt.Println("since no pdf file exists - directly download the latest file")
 		s.LocalFilePath = "data/01-04-2020.pdf"
 	} else {
 		s.LocalFilePath = files[0]
+		s.LocalFileExist = true
 	}
 	return s.LocalFilePath
 }

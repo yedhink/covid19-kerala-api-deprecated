@@ -1,12 +1,12 @@
 package scheduler
 
 import (
-	"fmt"
 	"os/exec"
 
 	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 	. "github.com/yedhink/covid19-kerala-api/internal/website"
+	. "github.com/yedhink/covid19-kerala-api/internal/logger"
 	"github.com/robfig/cron/v3"
 )
 
@@ -29,10 +29,10 @@ func (s Scheduler) Schedule(){
 	c := cron.New()
 	id,err := c.AddFunc(s.Spec, BackgroundDaemon)
 	if err != nil{
-		fmt.Printf("cron error : nothing scheduled %v\n",err)
+		Log.Print(Error("cron error : scheduling background daemon failed %v\n",err))
 		return
 	} else {
-		fmt.Printf("cron scheduled to run with spec %s and id %v\n",s.Spec,id)
+		Log.Print(Info("cron scheduled to run with spec %s and id %v\n",s.Spec,id))
 	}
 	c.Run()
 	select {}
@@ -43,25 +43,25 @@ func execScript(program string, script string) {
 	cmd := exec.Command(program, script,"-w")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Println(err)
+		Log.Print(Error("Failed to execute exec python script",err))
 	}
-	fmt.Printf("%s", out)
+	Log.Print(Info("%s", out))
 }
 
 func BackgroundDaemon(){
 	file := st.LocalPDFName()
-	fmt.Println("Requesting data from dhs kerala website....")
+	Log.Print(Info("Requesting data from dhs kerala website...."))
 	res := sc.GetMainPage()
 	website.BulletinPageURL = res[1]
 	if file == st.BasePath+res[0] {
-		fmt.Println("The pdf file is already latest")
+		Log.Print(Info("The pdf file is already latest"))
 	} else {
 		st.RemoteFileName = res[0]
-		fmt.Printf("You need latest pdf file : %s(local) != %s(remote)\n", file, st.BasePath+res[0])
-		fmt.Printf("lastest file : %s\n",sc.GetLatestPDF())
+		Log.Print(Info("You need latest pdf file : %s(local) != %s(remote)\n", file, st.BasePath+res[0]))
+		Log.Print(Info("lastest file : %s\n",sc.GetLatestPDF()))
 		err := website.Download(st)
 		if err != nil {
-			fmt.Println(err)
+			Log.Print(Error("Download Failed!",err))
 		} else {
 			execScript("python3", "scripts/extract-text-data.py")
 		}

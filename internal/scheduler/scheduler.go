@@ -50,6 +50,7 @@ func execScript(program string, script string) {
 		Log.Printf(Error("python script output : %s", out))
 		Log.Printf(Error("Make sure you've enabled pipenv shell in 'scripts' folder"))
 	} else {
+		s.Server.JsonData = Deserialize(s.St)
 		Log.Printf(Success("%s", out))
 	}
 }

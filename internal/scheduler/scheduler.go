@@ -11,7 +11,11 @@ import (
 )
 
 type Scheduler struct {
-	Spec string
+	CronSpec string
+	Sc Scraper
+	Site *Website
+	St *Storage
+	Server *Server
 }
 
 var website = &Website{

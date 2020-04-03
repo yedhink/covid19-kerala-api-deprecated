@@ -8,6 +8,7 @@ import (
 
 type Storage struct {
 	BasePath string
+	JsonFileName string
 	LocalFilePath string
 	RemoteFileName string
 	LocalFileExist bool

@@ -23,6 +23,7 @@ var website = &Website{
 var sc Scraper = website
 var st = &Storage{
 	BasePath : "data/",
+	JsonFileName: "data.json",
 	LocalFileExist: false,
 }
 

@@ -23,6 +23,7 @@ var website = &Website{
 var sc Scraper = website
 var st = &Storage{
 	BasePath : "data/",
+	LocalFileExist: false,
 }
 
 func (s Scheduler) Schedule(){

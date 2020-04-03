@@ -5,7 +5,7 @@ import (
 	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 	. "github.com/yedhink/covid19-kerala-api/internal/website"
-	server "github.com/yedhink/covid19-kerala-api/internal/server"
+	. "github.com/yedhink/covid19-kerala-api/internal/server"
 )
 
 
@@ -25,8 +25,9 @@ func main() {
 		LocalFileExist: false,
 	}
 
-	c := make(chan bool)
-	scheduler := Scheduler{
+	var server = &Server{
+		Port : 8000,
+	}
 		CronSpec : "* * * * *",
 		Sc : scraper,
 		St : storage,

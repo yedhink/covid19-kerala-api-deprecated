@@ -13,11 +13,8 @@ type Server struct {
 
 func (server *Server) Start(st *Storage) {
 	server.JsonData = Deserialize(st)
-	r := gin.Default()
-	// currently server.JsonData is not updated dynamically when cron is run
-	// maybe move this handler function to outside
-	r.GET("/api", func(c *gin.Context) {
-		c.IndentedJSON(200, server.JsonData)
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	router := gin.Default()
+	router.GET("/api", server.Api())
+	router.GET("/api/location", server.Location())
+	router.Run() // listen and serve on 0.0.0.0:8080
 }

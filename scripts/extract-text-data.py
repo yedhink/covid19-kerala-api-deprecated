@@ -26,7 +26,7 @@ class JsonObject:
 # global json object which helps in serializing the raw content into json
 js = JsonObject()
 
-def process_district(district_data):
+def process_district(district_data,timestamp):
     """
     param : list containing the lines of the table "District wise distribution"
     note  : each key in the js class instance "district" is the column heading
@@ -81,13 +81,13 @@ def process_district(district_data):
                 next=[]
     for cols in data:
         district = cols[0].lower()
-        getattr(js, district)["no_of_positive_cases_admitted"] = int(cols[1])
-        getattr(js, district)["other_districts"] = {}
+        getattr(js,timestamp)[district]["no_of_positive_cases_admitted"] = int(cols[1])
+        getattr(js,timestamp)[district]["other_districts"] = {}
         for i in range(2,2+len(cols[2:]),2):
-            getattr(js, district)["other_districts"][cols[i+1].lower()] = int(cols[i])
+            getattr(js,timestamp)[district]["other_districts"][cols[i+1].lower()] = int(cols[i])
 
 
-def process_annex1(annexure_1_data):
+def process_annex1(annexure_1_data,timestamp):
     """
     param : list containing the lines of the table
     note  : each key in the js class instance "district" is the column heading
@@ -96,19 +96,20 @@ def process_annex1(annexure_1_data):
     for row in annexure_1_data:
         cols = row.split()
         district = cols[0].lower()
-        setattr(js, district, {})
+        getattr(js,timestamp)[district] = {}
+        # setattr(js, district, {})
         for i, item in enumerate(cols[1:]):
             if i == 1:
-                getattr(js, district)[
+                getattr(js, timestamp)[district][
                     "no_of_persons_under_observation_as_on_today"] = int(item)
             elif i == 2:
-                getattr(js, district)[
+                getattr(js, timestamp)[district][
                     "no_of_persons_under_home_isolation_as_on_today"] = int(item)
             elif i == 3:
-                getattr(js, district)[
+                getattr(js, timestamp)[district][
                     "no_of_symptomatic_persons_hospitalized_as_on_today"] = int(item)
             else:
-                getattr(js, district)[
+                getattr(js, timestamp)[district][
                     "no_of_persons_hospitalized_today"] = int(item)
 
 
@@ -118,7 +119,7 @@ def extract_text_data(latest_pdf):
         pdf = pdftotext.PDF(f)
     # Iterate over only the required pages
     data = []
-    for page_num in range(2,len(pdf)):
+    for page_num in range(len(pdf)):
         lines = ""
         for char in pdf[page_num]:
             if char == '\n':
@@ -127,9 +128,12 @@ def extract_text_data(latest_pdf):
             else:
                 lines += char
     # pure regex witchcraftery - currently captures annex1 and district wise tables contents
+    file_date = re.findall(r'Date:(?:\s+)?(\d+)/(\d+)/(\d+)', "\n".join(data),re.DOTALL)
+    # convert to Standard ISO 8601 format
+    timestamp = "{}-{}-{}T00:00:00Z".format(file_date[0][2],file_date[0][1],file_date[0][0])
     annex1 = re.findall(r'Annexure -1: Details of.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     district = re.findall(r'District wise.*District..(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
-    return "".join(annex1[0]).split("\n")[:-1], "".join(district[0]).split("\n")[:-1]
+    return "".join(annex1[0]).split("\n")[:-1], "".join(district[0]).split("\n")[:-1],timestamp
 
 
 def init():
@@ -148,9 +152,10 @@ def init():
 if __name__ == "__main__":
     args = init()
     latest_pdf = max(glob.iglob("data/*.pdf"), key=os.path.getctime)
-    annex1_data, district_data = extract_text_data(latest_pdf)
-    process_annex1(annex1_data)
-    process_district(district_data)
+    annex1_data, district_data,timestamp = extract_text_data(latest_pdf)
+    setattr(js, timestamp, {})
+    process_annex1(annex1_data,timestamp)
+    process_district(district_data,timestamp)
     if args.verbose:
         print(f"filename : {latest_pdf} with length : {len(text_data)}")
     if args.text:

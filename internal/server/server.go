@@ -21,9 +21,7 @@ func (server *Server) Start(st *Storage) {
 	router := gin.New()
 	router.Use(gin.Logger(),gin.Recovery())
 	router.LoadHTMLFiles("web/template/index.html")
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(200, "index.html", nil)
-	})
+	router.GET("/", server.Root())
 	router.GET("/api", server.Api())
 	router.GET("/api/location", server.Location())
 	router.Run(server.Port) // listen and serve on 0.0.0.0:8080

@@ -15,11 +15,15 @@ func (server *Server) Location() gin.HandlerFunc {
 		c.Bind(&l)
 		Log.Print(Error("len of loc : %d",len(l.Loc)))
 		if len(l.Loc) > 0 {
-			x := server.JsonData[l.Loc[0]]
-			if x != nil {
-				x = x.(map[string]interface{})
+			d := make(map[string]interface{})
+			for _,v := range l.Loc{
+				x := server.JsonData[v]
+				if x != nil {
+					x = x.(map[string]interface{})
+					d[v] = x
+				}
 			}
-			c.JSON(200,x)
+			c.JSON(200,d)
 		} else {
 			d := make(map[string][]string)
 			for k,_ := range server.JsonData {

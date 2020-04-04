@@ -13,3 +13,5 @@
 
 # os junk
 **/*fuse_hidden*
+
+scripts/pdftotext.cpython-38-x86_64-linux-gnu.so

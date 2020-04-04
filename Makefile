@@ -1,2 +1,3 @@
 start:
-	go run cmd/covid19keralaapi/main.go
+	go build cmd/covid19keralaapi/main.go
+	PORT=5000 ./main

@@ -13,7 +13,6 @@ func (server *Server) Location() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var l Locations
 		c.Bind(&l)
-		Log.Print(Error("len of loc : %d",len(l.Loc)))
 		if len(l.Loc) > 0 {
 			d := make(map[string]interface{})
 			for _,v := range l.Loc{

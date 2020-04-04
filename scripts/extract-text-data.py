@@ -41,7 +41,7 @@ def process_district(district_data):
         site has some form of consistency in the future...
         """
 
-        # regex magic to capture district,no of pos cases and other districts
+        # regex magic to capture district,no of positive cases and other districts
         t = re.findall(r'(?:\s+)?([a-zA-Z]+)?\s*(\d+)?\s*(\w.*)?', row)
         """
         the table contains column data split all over the place.

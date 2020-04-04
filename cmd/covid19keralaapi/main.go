@@ -26,7 +26,7 @@ func main() {
 	}
 
 	var server = &Server{
-		Port : 8000,
+		Port : ":8080",
 	}
 
 	var scheduler = Scheduler{

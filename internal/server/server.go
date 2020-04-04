@@ -1,13 +1,14 @@
 package server
 
 import (
+	"fmt"
+	"github.com/gin-gonic/gin"
 	. "github.com/yedhink/covid19-kerala-api/internal/controller"
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
-	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	Port int
+	Port string
 	JsonData map[string]interface{}
 }
 

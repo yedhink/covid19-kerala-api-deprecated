@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	. "github.com/yedhink/covid19-kerala-api/internal/scheduler"
 	. "github.com/yedhink/covid19-kerala-api/internal/scraper"
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
@@ -26,7 +27,7 @@ func main() {
 	}
 
 	var server = &Server{
-		Port : ":8080",
+		Port : ":"+os.Getenv("PORT"),
 	}
 
 	var scheduler = Scheduler{

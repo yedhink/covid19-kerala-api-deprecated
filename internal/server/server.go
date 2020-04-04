@@ -13,8 +13,9 @@ type Server struct {
 
 func (server *Server) Start(st *Storage) {
 	server.JsonData = Deserialize(st)
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Logger(),gin.Recovery())
 	router.GET("/api", server.Api())
 	router.GET("/api/location", server.Location())
-	router.Run() // listen and serve on 0.0.0.0:8080
+	router.Run(server.Port) // listen and serve on 0.0.0.0:8080
 }

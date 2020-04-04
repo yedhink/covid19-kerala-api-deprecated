@@ -15,6 +15,7 @@
 * replace all fmt.Print with custom logger
 * prevent writing of color ascii codes to log file
 * add options to convert to pojo, golangobjects, pythonobject etc
+* log file directory should be within project, say logs/
 ## Web
 * add dark mode
 

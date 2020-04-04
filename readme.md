@@ -8,11 +8,15 @@
 * *add last modified time field to json*
 * district wise data - check if regex matches like ('','114','32 Ernakulam, 11 kannur') works as expected
 * remove hardcoded unix based paths for being platform-agnostic
+* add timeline
 ## GO
 * server.go line 71 no need for iteration. simply files[0] would do
 * remove hardcoded unix based paths for being platform-agnostic
 * replace all fmt.Print with custom logger
 * prevent writing of color ascii codes to log file
+* add options to convert to pojo, golangobjects, pythonobject etc
+## Web
+* add dark mode
 
 # Features
 * auto parsing the data from dhs. this feature is very much in the **experimental** stage, since conversion of the pdf to text may not be that consistent.

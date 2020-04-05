@@ -85,7 +85,7 @@ def process_district(district_data,timestamp):
             js[timestamp][district]["other_districts"][cols[i+1].lower()] = int(cols[i])
 
 
-def process_annex1(annexure_1_data,timestamp):
+def process_annex1(annexure_1_data,timestamp,other):
     """
     params
     ------
@@ -103,6 +103,9 @@ def process_annex1(annexure_1_data,timestamp):
     for row in annexure_1_data:
         cols = row.split()
         district = cols[0].lower()
+        # probably an extra word from regex match. but needs to be avoided
+        if district=="today":
+            continue
         js[timestamp][district] = {}
         for i, item in enumerate(cols[1:]):
             if i == 0:
@@ -114,6 +117,10 @@ def process_annex1(annexure_1_data,timestamp):
             elif i == 2:
                 js[timestamp][district][
                     "no_of_symptomatic_persons_hospitalized_as_on_today"] = int(item)
+                # even if no district table exist, we provide default values
+                if other is False:
+                    js[timestamp][district]["no_of_positive_cases_admitted"] = 0
+                    js[timestamp][district]["other_districts"] = {}
             else:
                 if persons_discharged_from_home_isolation:
                     js[timestamp][district]["no_of_persons_discharged_from_home_isolation"] = int(item)
@@ -172,12 +179,15 @@ def process_old_data(folder):
     folder which contains all the old pdfs - string
     """
     for f in glob.iglob(f"{folder}/*.pdf"):
+        d = True
         annex1_data, district_data,timestamp = extract_text_data(f)
         if annex1_data == "" and district_data == "" and timestamp == "":
             continue
         js[timestamp] = {}
         # condition is true only if a district wise table exists
-        if not process_annex1(annex1_data,timestamp):
+        if district_data == "":
+            d = False
+        if not process_annex1(annex1_data,timestamp,d):
             process_district(district_data,timestamp)
 
 def init():

@@ -169,8 +169,10 @@ if __name__ == "__main__":
     if args.jsontext:
         print(jsonpickle.encode(js))
     if args.write:
-        with io.open('data/data.json', 'w', encoding='utf-8') as f:
-            f.write(js.toJSON())
-        print("Latest json from the pdf in data/ dir has been written to data/data.json")
+        file = "data/data.json"
+        with io.open(file, 'w', encoding='utf-8') as f:
+            f.write(jsonpickle.encode(js))
+        print("Latest json from the pdf in data/ dir has been written to "+file)
         exit(0)
+
     print("No new content written to data.json. Try python3 extract-textdata.py --help")

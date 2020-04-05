@@ -17,32 +17,28 @@ import argparse
 import re
 from itertools import chain
 import io
+from datetime import datetime
 import jsonpickle
 jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
-
-
-class JsonObject:
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=False, indent=4, ensure_ascii=False)
 
 # global json object which helps in serializing the raw content into json
 js = dict()
 
 def process_district(district_data,timestamp):
     """
-    param : list containing the lines of the table "District wise distribution"
+    params
+    ------
+    lines of the table "District wise distribution" - list
+    timestamp - string
     note  : each key in the js class instance "district" is the column heading
             of the table
+    I really hope the district wise data table in the pdf uploaded in the
+    site has some form of consistency in the future...
     """
     next = []
     continuation = False
     data = []
     for row in district_data:
-        """
-        I really hope the district wise data table in the pdf uploaded in the
-        site has some form of consistency in the future...
-        """
-
         # regex magic to capture district,no of positive cases and other districts
         t = re.findall(r'(?:\s+)?([a-zA-Z]+)?\s*(\d+)?\s*(\w.*)?', row)
         """
@@ -91,8 +87,11 @@ def process_district(district_data,timestamp):
 
 def process_annex1(annexure_1_data,timestamp):
     """
-    param : list containing the lines of the table
-    note  : each key in the js class instance "district" is the column heading
+    params
+    ------
+    lines of the annex-1 table - list
+    timestamp of the file - string
+    note  : each key in the js object instance "district" is the column heading
             of the table
     """
     file_date = datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ').date()
@@ -106,10 +105,13 @@ def process_annex1(annexure_1_data,timestamp):
         district = cols[0].lower()
         js[timestamp][district] = {}
         for i, item in enumerate(cols[1:]):
+            if i == 0:
                 js[timestamp][district][
                     "no_of_persons_under_observation_as_on_today"] = int(item)
+            elif i == 1:
                 js[timestamp][district][
                     "no_of_persons_under_home_isolation_as_on_today"] = int(item)
+            elif i == 2:
                 js[timestamp][district][
                     "no_of_symptomatic_persons_hospitalized_as_on_today"] = int(item)
             else:
@@ -123,11 +125,18 @@ def process_annex1(annexure_1_data,timestamp):
 
 
 def extract_text_data(latest_pdf):
+    """
+    params
+    ------
+    latest-pdf file - string
+    it's very important to note that some of the pdf files
+    are not convertable to text using pdftotext library
+    """
     # Load the dhs data pdf
     with open(latest_pdf, "rb") as f:
         pdf = pdftotext.PDF(f)
-    # Iterate over only the required pages
     data = []
+    # Iterate over only the required pages by providing range
     for page_num in range(len(pdf)):
         lines = ""
         for char in pdf[page_num]:
@@ -136,11 +145,13 @@ def extract_text_data(latest_pdf):
                 lines = ""
             else:
                 lines += char
+    # pure regex witchcraftery - currently captures timestamp and annex1 and district wise tables contents
+    file_date = re.findall(r'Date:(?:\s)?(\d+)/(\d+)/(\d+)', "\n".join(data),re.DOTALL)
     annex1 = re.findall(r'District(?:\s+)?under.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     district = re.findall(r'District wise.*District..(?:\s+No. of positive cases admitted\n)?(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     try:
-    # convert to Standard ISO 8601 format
-    timestamp = "{}-{}-{}T00:00:00Z".format(file_date[0][2],file_date[0][1],file_date[0][0])
+        # convert to Standard ISO 8601 format
+        timestamp = "{}-{}-{}T00:00:00Z".format(file_date[0][2],file_date[0][1],file_date[0][0])
         annex1_table = annex1[0][0].strip().split("\n")
         annex1_table.extend(annex1[0][1].strip().split("\n"))
         print(f"current file : {latest_pdf}")
@@ -172,7 +183,7 @@ def process_old_data(folder):
 def init():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--text", action="store_true",
-                        help="display only the extracted text and exit")
+                        help="display only the extracted text from both annex-1 and district wise tables")
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="show the details about the file")
     parser.add_argument("-j", "--jsontext", action="store_true",
@@ -195,10 +206,15 @@ if __name__ == "__main__":
             f.write(jsonpickle.encode(js))
         print("Latest json from the old pdfs has been written to data/data.json")
         exit(0)
+    else:
+        """
+        parse the latest data pdf by intially creating a json obj
+        from existing json data
+        """
         with io.open('data/data.json', 'r', encoding='utf-8') as f:
             js = jsonpickle.decode(f.read())
-    latest_pdf = max(glob.iglob("data/*.pdf"), key=os.path.getctime)
-    annex1_data, district_data,timestamp = extract_text_data(latest_pdf)
+        latest_pdf = max(glob.iglob("data/*.pdf"), key=os.path.getctime)
+        annex1_data, district_data,timestamp = extract_text_data(latest_pdf)
         try:
             x = js[timestamp]
             if x is not None:
@@ -207,13 +223,15 @@ if __name__ == "__main__":
         except KeyError:
             js[timestamp] = {}
         if not process_annex1(annex1_data,timestamp):
-    process_district(district_data,timestamp)
+            process_district(district_data,timestamp)
     if args.verbose:
         print(f"filename : {latest_pdf} with length : {len(text_data)}")
     if args.text:
+        # print just the tables
         print("{:{}}Annex1\n{:=<{}}\n{}\n\n".format('',len(annex1_data[0])//2,'',len(annex1_data[0]),'\n'.join(annex1_data)))
         print("{:{}}Distirct Wise\n{:=<{}}\n{}\n\n".format('',len(district_data[0])//2-5,'',len(district_data[0]),'\n'.join(district_data)))
     if args.jsontext:
+        # print the json output without writing to file
         print(jsonpickle.encode(js))
     if args.write:
         file = "data/data.json"

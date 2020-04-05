@@ -91,6 +91,7 @@ def process_annex1(annexure_1_data,timestamp,other):
     ------
     lines of the annex-1 table - list
     timestamp of the file - string
+    other denotes whether default value for district table is required in json - bool
     note  : each key in the js object instance "district" is the column heading
             of the table
     """
@@ -118,7 +119,7 @@ def process_annex1(annexure_1_data,timestamp,other):
                 js[timestamp][district][
                     "no_of_symptomatic_persons_hospitalized_as_on_today"] = int(item)
                 # even if no district table exist, we provide default values
-                if other is False:
+                if other:
                     js[timestamp][district]["no_of_positive_cases_admitted"] = 0
                     js[timestamp][district]["other_districts"] = {}
             else:
@@ -179,14 +180,14 @@ def process_old_data(folder):
     folder which contains all the old pdfs - string
     """
     for f in glob.iglob(f"{folder}/*.pdf"):
-        d = True
+        d = False
         annex1_data, district_data,timestamp = extract_text_data(f)
         if annex1_data == "" and district_data == "" and timestamp == "":
             continue
         js[timestamp] = {}
         # condition is true only if a district wise table exists
         if district_data == "":
-            d = False
+            d = True
         if not process_annex1(annex1_data,timestamp,d):
             process_district(district_data,timestamp)
 
@@ -232,7 +233,7 @@ if __name__ == "__main__":
                 exit(0)
         except KeyError:
             js[timestamp] = {}
-        if not process_annex1(annex1_data,timestamp):
+        if not process_annex1(annex1_data,timestamp,False):
             process_district(district_data,timestamp)
     if args.verbose:
         print(f"filename : {latest_pdf} with length : {len(text_data)}")

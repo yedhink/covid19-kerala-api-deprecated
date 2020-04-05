@@ -23,6 +23,7 @@ jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
 
 # global json object which helps in serializing the raw content into json
 js = dict()
+all_districts = ["thiruvananthapuram","kollam","pathanamthitta","idukki","kottayam","alappuzha","ernakulam","thrissur","palakkad","malappuram","kozhikode","wayanad","kannur","kasaragod"]
 
 def process_district(district_data,timestamp):
     """
@@ -77,12 +78,19 @@ def process_district(district_data,timestamp):
                 x.extend(next)
                 data.append(x)
                 next=[]
+    flag = all_districts[:]
     for cols in data:
         district = cols[0].lower()
+        if district!="total":
+            flag.remove(district)
         js[timestamp][district]["no_of_positive_cases_admitted"] = int(cols[1])
         js[timestamp][district]["other_districts"] = {}
         for i in range(2,2+len(cols[2:]),2):
             js[timestamp][district]["other_districts"][cols[i+1].lower()] = int(cols[i])
+    # not all district tables have full districts mentioned
+    for i in flag:
+        js[timestamp][i]["no_of_positive_cases_admitted"] = 0
+        js[timestamp][i]["other_districts"] = {}
 
 
 def process_annex1(annexure_1_data,timestamp,other):
@@ -156,7 +164,8 @@ def extract_text_data(latest_pdf):
     # pure regex witchcraftery - currently captures timestamp and annex1 and district wise tables contents
     file_date = re.findall(r'Date:(?:\s)?(\d+)/(\d+)/(\d+)', "\n".join(data),re.DOTALL)
     annex1 = re.findall(r'District(?:\s+)?under.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
-    district = re.findall(r'District wise.*District..(?:\s+No. of positive cases admitted\n)?(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
+    # district = re.findall(r'District wise.*District..(?:\s+No. of positive cases admitted\n)?(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
+    district = re.findall(r'District(?:\s+)(?:No\. of positive.*?[\n\r])(.*)(Total.*?\n)', "\n".join(data),re.DOTALL)
     try:
         # convert to Standard ISO 8601 format
         timestamp = "{}-{}-{}T00:00:00Z".format(file_date[0][2],file_date[0][1],file_date[0][0])

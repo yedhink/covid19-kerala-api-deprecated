@@ -1,7 +1,7 @@
 package model
 
 type DataSet struct{
-    TimeData TimeLine
+    TimeLineData TimeLine
     All Data
     Districts Location
 }

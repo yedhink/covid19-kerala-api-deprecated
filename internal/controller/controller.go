@@ -61,7 +61,7 @@ func Deserialize(st *Storage) DataSet{
 	dataset.All = d
 	// generate the timeline into a map
 	genarateTimeline(st,&d,&t,&l)
-	dataset.TimeData = t
+	dataset.TimeLineData = t
 	dataset.Districts = l
 	return dataset
 }

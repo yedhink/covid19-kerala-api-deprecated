@@ -95,6 +95,12 @@ def process_annex1(annexure_1_data,timestamp):
     note  : each key in the js class instance "district" is the column heading
             of the table
     """
+    file_date = datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ').date()
+    with_discharged_from_home_date =  datetime.strptime("2020-03-08T00:00:00Z",'%Y-%m-%dT%H:%M:%SZ').date()
+    # some of the old pdf datasets(<=08-03-2020) has annex-1 table with last column as persons_discharged_from_home_isolation
+    persons_discharged_from_home_isolation = False
+    if file_date <= with_discharged_from_home_date:
+        persons_discharged_from_home_isolation = True
     for row in annexure_1_data:
         cols = row.split()
         district = cols[0].lower()
@@ -107,10 +113,13 @@ def process_annex1(annexure_1_data,timestamp):
                 js[timestamp][district][
                     "no_of_symptomatic_persons_hospitalized_as_on_today"] = int(item)
             else:
+                if persons_discharged_from_home_isolation:
                     js[timestamp][district]["no_of_persons_discharged_from_home_isolation"] = int(item)
                     js[timestamp][district]["no_of_persons_hospitalized_today"] = 0
+                else:
                     js[timestamp][district]["no_of_persons_discharged_from_home_isolation"] = 0
                     js[timestamp][district]["no_of_persons_hospitalized_today"] = int(item)
+    return persons_discharged_from_home_isolation
 
 
 def extract_text_data(latest_pdf):
@@ -127,13 +136,23 @@ def extract_text_data(latest_pdf):
                 lines = ""
             else:
                 lines += char
-    # pure regex witchcraftery - currently captures annex1 and district wise tables contents
-    file_date = re.findall(r'Date:(?:\s+)?(\d+)/(\d+)/(\d+)', "\n".join(data),re.DOTALL)
+    annex1 = re.findall(r'District(?:\s+)?under.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
+    district = re.findall(r'District wise.*District..(?:\s+No. of positive cases admitted\n)?(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
+    try:
     # convert to Standard ISO 8601 format
     timestamp = "{}-{}-{}T00:00:00Z".format(file_date[0][2],file_date[0][1],file_date[0][0])
-    annex1 = re.findall(r'Annexure -1: Details of.*on today.(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
-    district = re.findall(r'District wise.*District..(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
-    return "".join(annex1[0]).split("\n")[:-1], "".join(district[0]).split("\n")[:-1],timestamp
+        annex1_table = annex1[0][0].strip().split("\n")
+        annex1_table.extend(annex1[0][1].strip().split("\n"))
+        print(f"current file : {latest_pdf}")
+    except IndexError:
+        # if the pdf file cant be read as text
+        return "","",""
+    if len(district) == 0:
+        district_table = ""
+    else:
+        district_table = "".join(district[0]).split("\n")[:-1]
+    return annex1_table, district_table, timestamp
+
 
 def process_old_data(folder):
     """
@@ -187,6 +206,7 @@ if __name__ == "__main__":
                 exit(0)
         except KeyError:
             js[timestamp] = {}
+        if not process_annex1(annex1_data,timestamp):
     process_district(district_data,timestamp)
     if args.verbose:
         print(f"filename : {latest_pdf} with length : {len(text_data)}")

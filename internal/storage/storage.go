@@ -26,6 +26,15 @@ func (s Storage) Delete() {
 	}
 }
 
+func GetLocalPdfDate(BasePath string) string {
+	files, err := filepath.Glob(BasePath+"*.pdf")
+	if err != nil {
+		fmt.Printf("glob error : no local pdf file exists in %s\n",BasePath)
+	}
+	filename := filepath.Base(files[0])
+	return filename[0:len(filename)-len(".pdf")]
+}
+
 // LocalPDFName retrieves the local pdf file from "data" dir
 func (s *Storage) LocalPDFName() string{
 	// Glob ignores file system errors such as I/O errors reading directories.

@@ -11,25 +11,39 @@ import (
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 )
 
-func genarateTimeline(st *Storage,d *Data,t *TimeLine) map[string]interface{}{
+func getLocations(v map[string]interface{}) map[string][]string {
+	d := make(map[string][]string)
+	for k,_ := range v {
+		if k != "total" {
+			d["locations"] = append(d["locations"],k)
+		}
+	}
+	sort.Strings(d["locations"])
+	return d
+}
+
+func genarateTimeline(st *Storage,d *Data,t *TimeLine,l *Location) map[string]interface{} {
 	// messily generates a timeline and stores into a map
 	// requires refactoring into struct model
 	date,_ := time.Parse("01-02-2006", GetLocalPdfDate(st.BasePath))
 	latest := fmt.Sprintf("%02d-%02d-%02dT00:00:00Z", date.Year(),date.Month(),date.Day())
-	latest_value := d.Data[latest].(map[string]interface{})["total"].(map[string]interface{})["no_of_positive_cases_admitted"]
+	latest_data := d.Data[latest].(map[string]interface{})
+	latest_value := latest_data["total"].(map[string]interface{})["no_of_positive_cases_admitted"]
 	t.TimeLine["total_no_of_positive_cases_admitted"] = make(map[string]interface{},2)
 	t.TimeLine["total_no_of_positive_cases_admitted"].(map[string]interface{})["latest"] = latest_value
 	t.TimeLine["total_no_of_positive_cases_admitted"].(map[string]interface{})["timeline"] = make(map[string]interface{},len(d.Data))
 	for k,v := range d.Data {
 		t.TimeLine["total_no_of_positive_cases_admitted"].(map[string]interface{})["timeline"].(map[string]interface{})[k] = v.(map[string]interface{})["total"].(map[string]interface{})["no_of_positive_cases_admitted"]
 	}
+	l.Loc = getLocations(latest_data)
 	return t.TimeLine
 }
 
 func Deserialize(st *Storage) DataSet{
+	var dataset DataSet
 	var d Data
 	var t = NewTimeLine()
-	var dataset DataSet
+	var l = NewLocation()
 	// Open our jsonFile
 	file, err := ioutil.ReadFile(st.BasePath+st.JsonFileName)
 	if err != nil {
@@ -43,7 +57,8 @@ func Deserialize(st *Storage) DataSet{
 	}
 	dataset.All = d
 	// generate the timeline into a map
-	genarateTimeline(st,&d,&t)
+	genarateTimeline(st,&d,&t,&l)
 	dataset.TimeData = t
+	dataset.Districts = l
 	return dataset
 }

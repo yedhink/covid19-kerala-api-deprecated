@@ -32,6 +32,10 @@ func Deserialize(st *Storage) map[string]interface{}{
 		Log.Printf(Error("failed to read json file : %s\n",err))
 	}
 	Log.Printf(Success("Successfully Opened %s\n",st.BasePath+st.JsonFileName))
+	err = jsoniter.Unmarshal(file, &d.Data)
+	if err != nil {
+		Log.Printf(Error("failed to unmarshal into json obj : %s\n",err))
+	}
 	genarateTimeline(st,&d,&t)
 	dataset.TimeData = t
 }

@@ -159,6 +159,12 @@ if __name__ == "__main__":
             js = jsonpickle.decode(f.read())
     latest_pdf = max(glob.iglob("data/*.pdf"), key=os.path.getctime)
     annex1_data, district_data,timestamp = extract_text_data(latest_pdf)
+        try:
+            x = js[timestamp]
+            if x is not None:
+                print("data already up to date")
+                exit(0)
+        except KeyError:
             js[timestamp] = {}
     process_district(district_data,timestamp)
     if args.verbose:

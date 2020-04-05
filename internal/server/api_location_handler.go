@@ -1,12 +1,14 @@
 package server
 import (
-	"sort"
-	. "github.com/yedhink/covid19-kerala-api/internal/logger"
+	// . "github.com/yedhink/covid19-kerala-api/internal/logger"
+	"time"
 	"github.com/gin-gonic/gin"
 )
 
 type Locations struct{
 	Loc []string `form:"loc"`
+	Date string `form:"date"`
+}
 
 func filterByLoc(value map[string]interface{},key string,d map[string]interface{},userLoc []string) {
 	for _,loc := range userLoc {
@@ -14,7 +16,30 @@ func filterByLoc(value map[string]interface{},key string,d map[string]interface{
 	}
 }
 
+func parseDate(k string, s string) (time.Time,time.Time) {
+	userDate,err := time.Parse("02-01-2006", s)
+	if err != nil {
+		userDate,_ =  time.Parse("02/01/2006", s)
+	}
+	userDate.Format(time.RFC3339)
+	keyDate,_ := time.Parse(time.RFC3339,k)
+	return keyDate,userDate
 }
+
+func validateDate(k string,d string) bool {
+	switch d[:1] {
+	case "<":
+		kD,uD := parseDate(k,d[1:])
+		return kD.Before(uD)
+	case ">":
+		kD,uD := parseDate(k,d[1:])
+		return kD.After(uD)
+	default:
+		kD,uD := parseDate(k,d)
+		return kD == uD
+	}
+}
+
 
 func (server *Server) Location() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -22,8 +47,15 @@ func (server *Server) Location() gin.HandlerFunc {
 		c.Bind(&l)
 		if len(l.Loc) > 0 {
 			d := make(map[string]interface{})
+			for key,value := range server.JsonData.All.Data{
+				if l.Date != "" {
+					if validateDate(key,l.Date) {
+						d[key] = make(map[string]interface{},len(l.Loc))
 						filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
-						filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
+					}
+				} else {
+					d[key] = make(map[string]interface{},len(l.Loc))
+					filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
 				}
 			}
 			c.IndentedJSON(200,d)

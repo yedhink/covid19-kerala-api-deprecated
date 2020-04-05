@@ -16,7 +16,8 @@ import json
 import argparse
 import re
 from itertools import chain
-import io, json
+import jsonpickle
+jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
 
 
 class JsonObject:
@@ -151,6 +152,12 @@ def init():
 
 if __name__ == "__main__":
     args = init()
+        with io.open('data/data.json', 'w', encoding='utf-8') as f:
+            f.write(jsonpickle.encode(js))
+        print("Latest json from the old pdfs has been written to data/data.json")
+        exit(0)
+        with io.open('data/data.json', 'r', encoding='utf-8') as f:
+            js = jsonpickle.decode(f.read())
     latest_pdf = max(glob.iglob("data/*.pdf"), key=os.path.getctime)
     annex1_data, district_data,timestamp = extract_text_data(latest_pdf)
     setattr(js, timestamp, {})
@@ -162,7 +169,7 @@ if __name__ == "__main__":
         print("{:{}}Annex1\n{:=<{}}\n{}\n\n".format('',len(annex1_data[0])//2,'',len(annex1_data[0]),'\n'.join(annex1_data)))
         print("{:{}}Distirct Wise\n{:=<{}}\n{}\n\n".format('',len(district_data[0])//2-5,'',len(district_data[0]),'\n'.join(district_data)))
     if args.jsontext:
-        print(js.toJSON())
+        print(jsonpickle.encode(js))
     if args.write:
         with io.open('data/data.json', 'w', encoding='utf-8') as f:
             f.write(js.toJSON())

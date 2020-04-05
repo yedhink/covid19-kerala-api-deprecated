@@ -25,5 +25,6 @@ func (server *Server) Start(st *Storage) {
 	router.GET("/", server.Root())
 	router.GET("/api", server.Api())
 	router.GET("/api/location", server.Location())
+	router.GET("/api/timeline", server.TimeLine())
 	router.Run(server.Port) // listen and serve on 0.0.0.0:8080
 }

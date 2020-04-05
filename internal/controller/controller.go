@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"fmt"
 	"time"
+	"sort"
 
 	"github.com/json-iterator/go"
 	. "github.com/yedhink/covid19-kerala-api/internal/logger"
@@ -25,7 +26,9 @@ func getLocations(v map[string]interface{}) map[string][]string {
 func genarateTimeline(st *Storage,d *Data,t *TimeLine,l *Location) map[string]interface{} {
 	// messily generates a timeline and stores into a map
 	// requires refactoring into struct model
-	date,_ := time.Parse("01-02-2006", GetLocalPdfDate(st.BasePath))
+
+	//                    mm-dd-yyyy
+	date,_ := time.Parse("02-01-2006", GetLocalPdfDate(st.BasePath))
 	latest := fmt.Sprintf("%02d-%02d-%02dT00:00:00Z", date.Year(),date.Month(),date.Day())
 	latest_data := d.Data[latest].(map[string]interface{})
 	latest_value := latest_data["total"].(map[string]interface{})["no_of_positive_cases_admitted"]

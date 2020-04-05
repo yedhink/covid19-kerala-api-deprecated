@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	. "github.com/yedhink/covid19-kerala-api/internal/model"
 	. "github.com/yedhink/covid19-kerala-api/internal/controller"
 	. "github.com/yedhink/covid19-kerala-api/internal/logger"
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
@@ -9,7 +10,7 @@ import (
 
 type Server struct {
 	Port string
-	JsonData map[string]interface{}
+	JsonData DataSet
 }
 
 func (server *Server) Start(st *Storage) {

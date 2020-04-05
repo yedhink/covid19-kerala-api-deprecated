@@ -16,6 +16,7 @@ import json
 import argparse
 import re
 from itertools import chain
+import io
 import jsonpickle
 jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
 
@@ -134,7 +135,20 @@ def extract_text_data(latest_pdf):
     district = re.findall(r'District wise.*District..(.*?)(Total.*?\n)', "\n".join(data),re.DOTALL)
     return "".join(annex1[0]).split("\n")[:-1], "".join(district[0]).split("\n")[:-1],timestamp
 
+def process_old_data(folder):
+    """
+    params
+    -----
+    folder which contains all the old pdfs - string
+    """
+    for f in glob.iglob(f"{folder}/*.pdf"):
+        annex1_data, district_data,timestamp = extract_text_data(f)
+        if annex1_data == "" and district_data == "" and timestamp == "":
+            continue
         js[timestamp] = {}
+        # condition is true only if a district wise table exists
+        if not process_annex1(annex1_data,timestamp):
+            process_district(district_data,timestamp)
 
 def init():
     parser = argparse.ArgumentParser()
@@ -146,11 +160,18 @@ def init():
                         help="show the final json content")
     parser.add_argument("-w", "--write", action="store_true",
                         help="overwrite the data/data.json file with latest pdf content")
+    parser.add_argument("-o", "--old", action='store', default=False, dest='path_to_old_data_dir', nargs=1, type=str, help="parse the old pdf datasets - provide the directory as arg")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = init()
+    if args.path_to_old_data_dir:
+        """
+        this is just a one time thing. we need to get the data from dataset starting
+        back from 01-31-2020 and dump it into our data.json.
+        """
+        process_old_data(args.path_to_old_data_dir[0])
         with io.open('data/data.json', 'w', encoding='utf-8') as f:
             f.write(jsonpickle.encode(js))
         print("Latest json from the old pdfs has been written to data/data.json")

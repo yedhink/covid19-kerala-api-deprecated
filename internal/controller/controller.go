@@ -2,6 +2,8 @@ package controller
 
 import (
 	"io/ioutil"
+	"fmt"
+	"time"
 
 	"github.com/json-iterator/go"
 	. "github.com/yedhink/covid19-kerala-api/internal/logger"
@@ -24,18 +26,24 @@ func genarateTimeline(st *Storage,d *Data,t *TimeLine) map[string]interface{}{
 	return t.TimeLine
 }
 
-func Deserialize(st *Storage) map[string]interface{}{
+func Deserialize(st *Storage) DataSet{
 	var d Data
+	var t = NewTimeLine()
+	var dataset DataSet
 	// Open our jsonFile
 	file, err := ioutil.ReadFile(st.BasePath+st.JsonFileName)
 	if err != nil {
 		Log.Printf(Error("failed to read json file : %s\n",err))
 	}
 	Log.Printf(Success("Successfully Opened %s\n",st.BasePath+st.JsonFileName))
+	// read the whole json
 	err = jsoniter.Unmarshal(file, &d.Data)
 	if err != nil {
 		Log.Printf(Error("failed to unmarshal into json obj : %s\n",err))
 	}
+	dataset.All = d
+	// generate the timeline into a map
 	genarateTimeline(st,&d,&t)
 	dataset.TimeData = t
+	return dataset
 }

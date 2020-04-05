@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5860ef0f88f49df882fd81fbfbfaabfb6753851f3ae5a41927dcec1725bbc16d"
+            "sha256": "126b0ab4ac91ed145f30b6df7a1048e1caa0a2e1e994ff8541cb1f956463aafe"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,14 @@
         ]
     },
     "default": {
+        "jsonpickle": {
+            "hashes": [
+                "sha256:71bca2b80ae28af4e3f86629ef247100af7f97032b5ca8d791c1f8725b411d95",
+                "sha256:efc6839cb341985f0c24f98650a4c1063a2877c236ffd3d7e1662f0c482bac93"
+            ],
+            "index": "pypi",
+            "version": "==1.3"
+        },
         "pdftotext": {
             "hashes": [
                 "sha256:d37864049581fb13cdcf7b23d4ea23dac7ca2e9c646e8ecac1a39275ab1cae03"

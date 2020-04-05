@@ -7,6 +7,13 @@ import (
 
 type Locations struct{
 	Loc []string `form:"loc"`
+
+func filterByLoc(value map[string]interface{},key string,d map[string]interface{},userLoc []string) {
+	for _,loc := range userLoc {
+		d[key].(map[string]interface{})[loc] = value[loc]
+	}
+}
+
 }
 
 func (server *Server) Location() gin.HandlerFunc {
@@ -15,11 +22,8 @@ func (server *Server) Location() gin.HandlerFunc {
 		c.Bind(&l)
 		if len(l.Loc) > 0 {
 			d := make(map[string]interface{})
-			for _,v := range l.Loc{
-				x := server.JsonData[v]
-				if x != nil {
-					x = x.(map[string]interface{})
-					d[v] = x
+						filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
+						filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
 				}
 			}
 			c.JSON(200,d)

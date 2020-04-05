@@ -24,14 +24,7 @@ func (server *Server) Location() gin.HandlerFunc {
 			}
 			c.JSON(200,d)
 		} else {
-			d := make(map[string][]string)
-			for k,_ := range server.JsonData {
-				if k != "total" {
-					d["locations"] = append(d["locations"],k)
-				}
-			}
-			sort.Strings(d["locations"])
-			c.JSON(200,d)
+			c.JSON(200,server.JsonData.Districts.Loc)
 		}
 	}
 }

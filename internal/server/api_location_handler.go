@@ -26,9 +26,9 @@ func (server *Server) Location() gin.HandlerFunc {
 						filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
 				}
 			}
-			c.JSON(200,d)
+			c.IndentedJSON(200,d)
 		} else {
-			c.JSON(200,server.JsonData.Districts.Loc)
+			c.IndentedJSON(200,server.JsonData.Districts.Loc)
 		}
 	}
 }

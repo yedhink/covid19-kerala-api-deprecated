@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/thinkerou/favicon"
 	. "github.com/yedhink/covid19-kerala-api/internal/model"
 	. "github.com/yedhink/covid19-kerala-api/internal/controller"
 	. "github.com/yedhink/covid19-kerala-api/internal/logger"
@@ -21,10 +22,11 @@ func (server *Server) Start(st *Storage) {
 	}
 	router := gin.New()
 	router.Use(gin.Logger(),gin.Recovery())
-	router.LoadHTMLFiles("web/template/index.html")
+	router.Use(favicon.New("web/assets/favicon.ico"))
+	router.LoadHTMLFiles("web/index.html")
 	router.GET("/", server.Root())
 	router.GET("/api", server.Api())
 	router.GET("/api/location", server.Location(st))
 	router.GET("/api/timeline", server.TimeLine())
-	router.Run(server.Port) // listen and serve on 0.0.0.0:8080
+	router.Run(server.Port) // listen and serve on 0.0.0.0:8080 by default
 }

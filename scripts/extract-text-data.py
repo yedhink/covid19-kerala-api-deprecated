@@ -25,6 +25,14 @@ jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
 js = dict()
 all_districts = ["thiruvananthapuram","kollam","pathanamthitta","idukki","kottayam","alappuzha","ernakulam","thrissur","palakkad","malappuram","kozhikode","wayanad","kannur","kasaragod"]
 
+
+def split_joint_digit_and_dist(x):
+    # 18Kasragod - splits it into [18,Kasaragod]
+    # this inconsistency was first noted in 06-04-2020.pdf
+    match = re.findall(r'(\d+)(?:\s*)?(\w+)',x)
+    # print(f"splitted digit and dist : {match}{x}")
+    return match[0][0].strip(),match[0][1].strip()
+
 def process_district(district_data,timestamp):
     """
     params
@@ -42,6 +50,7 @@ def process_district(district_data,timestamp):
     for row in district_data:
         # regex magic to capture district,no of positive cases and other districts
         t = re.findall(r'(?:\s+)?([a-zA-Z]+)?\s*(\d+)?\s*(\w.*)?', row)
+        # print(t)
         """
         the table contains column data split all over the place.
         the following chunks of code tries to put everything in the
@@ -53,7 +62,7 @@ def process_district(district_data,timestamp):
             else:
                 next.extend(t[0][1])
             if t[0][2] != '':
-                next.extend(list(chain(*[tmp.split() for tmp in t[0][2].split(',')])))
+                next.extend(list(chain(*[split_joint_digit_and_dist(tmp) for tmp in t[0][2].split(',')])))
             if next[-1].isnumeric():
                 continuation = True
         else:
@@ -73,7 +82,7 @@ def process_district(district_data,timestamp):
             if t[0][2] == '':
                 data.append([t[0][0],dummy])
             else:
-                next.extend(list(chain(*[tmp.split() for tmp in t[0][2].split(',')])))
+                next.extend(list(chain(*[split_joint_digit_and_dist(tmp) for tmp in t[0][2].split(',')])))
                 x = [t[0][0],t[0][1]]
                 x.extend(next)
                 data.append(x)
@@ -171,7 +180,7 @@ def extract_text_data(latest_pdf):
         timestamp = "{}-{}-{}T00:00:00Z".format(file_date[0][2],file_date[0][1],file_date[0][0])
         annex1_table = annex1[0][0].strip().split("\n")
         annex1_table.extend(annex1[0][1].strip().split("\n"))
-        print(f"current file : {latest_pdf}")
+        # print(f"current file : {latest_pdf}")
     except IndexError:
         # if the pdf file cant be read as text
         return "","",""
@@ -238,7 +247,7 @@ if __name__ == "__main__":
         try:
             x = js[timestamp]
             if x is not None:
-                print("data already up to date")
+                print("the file {} has already been extracted and added to data/data.json")
                 exit(0)
         except KeyError:
             js[timestamp] = {}
@@ -257,7 +266,7 @@ if __name__ == "__main__":
         file = "data/data.json"
         with io.open(file, 'w', encoding='utf-8') as f:
             f.write(jsonpickle.encode(js))
-        print("Latest json from the pdf in data/ dir has been written to "+file)
+        print("Python Script : Latest json from the pdf in data/ dir has been written to "+file)
         exit(0)
 
     print("No new content written to data.json. Try python3 extract-textdata.py --help")

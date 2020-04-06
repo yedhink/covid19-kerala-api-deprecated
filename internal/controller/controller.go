@@ -29,16 +29,19 @@ func genarateTimeline(st *Storage,d *Data,t *TimeLine,l *Location) map[string]in
 
 	//                    mm-dd-yyyy
 	date,_ := time.Parse("02-01-2006", GetLocalPdfDate(st.BasePath))
-	latest := fmt.Sprintf("%02d-%02d-%02dT00:00:00Z", date.Year(),date.Month(),date.Day())
-	latest_data := d.Data[latest].(map[string]interface{})
-	latest_value := latest_data["total"].(map[string]interface{})["no_of_positive_cases_admitted"]
+	latest_date := fmt.Sprintf("%02d-%02d-%02dT00:00:00Z", date.Year(),date.Month(),date.Day())
+	latest_obj := d.Data[latest_date].(map[string]interface{})
+	latest_value := latest_obj["total"].(map[string]interface{})["no_of_positive_cases_admitted"]
+
 	t.TimeLine["total_no_of_positive_cases_admitted"] = make(map[string]interface{},2)
 	t.TimeLine["total_no_of_positive_cases_admitted"].(map[string]interface{})["latest"] = latest_value
+
 	t.TimeLine["total_no_of_positive_cases_admitted"].(map[string]interface{})["timeline"] = make(map[string]interface{},len(d.Data))
+
 	for k,v := range d.Data {
 		t.TimeLine["total_no_of_positive_cases_admitted"].(map[string]interface{})["timeline"].(map[string]interface{})[k] = v.(map[string]interface{})["total"].(map[string]interface{})["no_of_positive_cases_admitted"]
 	}
-	l.Loc = getLocations(latest_data)
+	l.Loc = getLocations(latest_obj)
 	return t.TimeLine
 }
 

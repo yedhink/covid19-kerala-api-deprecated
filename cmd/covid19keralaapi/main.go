@@ -31,7 +31,7 @@ func main() {
 	}
 
 	var scheduler = Scheduler{
-		CronSpec : "* * * * *",
+		CronSpec : "*/10 18-20 * * *",
 		Sc : scraper,
 		St : storage,
 		Site : website,

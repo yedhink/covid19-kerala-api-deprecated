@@ -65,7 +65,17 @@ func (server *Server) Location(st *Storage) gin.HandlerFunc {
 			}
 			c.IndentedJSON(200,d)
 		} else {
-			c.IndentedJSON(200,server.JsonData.Districts.Loc)
+			if l.Date != "" {
+				d := make(map[string]interface{})
+				for key,value := range server.JsonData.All.Data{
+					if validateDate(key,l.Date,st) {
+						d[key] = value
+					}
+				}
+				c.IndentedJSON(200,d)
+			} else {
+				c.IndentedJSON(200,server.JsonData.Districts.Loc)
+			}
 		}
 	}
 }

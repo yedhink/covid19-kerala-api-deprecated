@@ -1,1 +1,1 @@
-web: main
+web: covid19keralaapi

@@ -20,6 +20,9 @@ func (server *Server) Start(st *Storage) {
 		Log.Printf(Error("PORT env variable must be set in shell before executing the binary : eg:- PORT=5000 ./main"))
 		return
 	}
+
+	// run in Release mode by default
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.Use(gin.Logger(),gin.Recovery())
 	router.Use(favicon.New("web/assets/favicon.ico"))

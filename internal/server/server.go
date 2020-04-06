@@ -24,7 +24,7 @@ func (server *Server) Start(st *Storage) {
 	router.LoadHTMLFiles("web/template/index.html")
 	router.GET("/", server.Root())
 	router.GET("/api", server.Api())
-	router.GET("/api/location", server.Location())
+	router.GET("/api/location", server.Location(st))
 	router.GET("/api/timeline", server.TimeLine())
 	router.Run(server.Port) // listen and serve on 0.0.0.0:8080
 }

@@ -1,6 +1,6 @@
 package server
 import (
-	// . "github.com/yedhink/covid19-kerala-api/internal/logger"
+	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 	"time"
 	"github.com/gin-gonic/gin"
 )
@@ -26,7 +26,7 @@ func parseDate(k string, s string) (time.Time,time.Time) {
 	return keyDate,userDate
 }
 
-func validateDate(k string,d string) bool {
+func validateDate(k string,d string,st *Storage) bool {
 	switch d[:1] {
 	case "<":
 		kD,uD := parseDate(k,d[1:])
@@ -34,14 +34,19 @@ func validateDate(k string,d string) bool {
 	case ">":
 		kD,uD := parseDate(k,d[1:])
 		return kD.After(uD)
+	case "l":
+		// latest data pdf
+		date := GetLocalPdfDate(st.BasePath)
+		kD,uD := parseDate(k, date)
+		return kD.Equal(uD)
 	default:
 		kD,uD := parseDate(k,d)
-		return kD == uD
+		return kD.Equal(uD)
 	}
 }
 
 
-func (server *Server) Location() gin.HandlerFunc {
+func (server *Server) Location(st *Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var l Locations
 		c.Bind(&l)
@@ -49,7 +54,7 @@ func (server *Server) Location() gin.HandlerFunc {
 			d := make(map[string]interface{})
 			for key,value := range server.JsonData.All.Data{
 				if l.Date != "" {
-					if validateDate(key,l.Date) {
+					if validateDate(key,l.Date,st) {
 						d[key] = make(map[string]interface{},len(l.Loc))
 						filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
 					}

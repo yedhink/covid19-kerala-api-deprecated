@@ -1,10 +1,8 @@
-<div style="display:flex;align-items:center;flex-direction:column;">
-<h1>COVID19 Kerala API</h1>
-<h3><a href="https://covid19-kerala-api.herokuapp.com">https://covid19-kerala-api.herokuapp.com</a><h3>
-</div>
+<h1 align="center">COVID19 Kerala API</h1>
+<h3 align="center"><a href="https://covid19-kerala-api.herokuapp.com">https://covid19-kerala-api.herokuapp.com</a><h3>
 
 ## Why?
-Manually collecting and updating the data from the pdf sources is time consuming and energy draining! Make use of this API to automatically retrieve the latest as well some of the old COVID19 data specific to Kerala in JSON format, from your applications with ease.
+Manually collecting and updating the data from the pdf sources is time consuming and energy draining! Make use of this API to **automatically** retrieve the **latest** as well some of the old COVID19 data specific to Kerala in JSON format, from your applications with ease.
 
 ---
 

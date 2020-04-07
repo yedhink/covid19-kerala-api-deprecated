@@ -174,11 +174,11 @@ make init
 
 The python script is invoked from within the gin-server. Therefore activate the pipenv shell first:-
 ```bash
-cd scripts/ && pipenv shell
+pipenv shell
 ```
-Then run the server(note that the executable will stored in bin/):-
+Then run the server(note that the executable will be stored in bin/):-
 ```bash
-cd .. && make build
+make build
 ```
 Once everything is setup, essentially running `make build` from project root can restart the server everytime.
 

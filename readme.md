@@ -44,7 +44,9 @@ The data can be viewed from the browser by visiting say `https://covid19-kerala-
 ```bash
 curl "https://covid19-kerala-api.herokuapp.com/api" | jq
 ```
-**Note that all the timestamps in results follow <a href="https://www.w3.org/TR/NOTE-datetime">ISO 8601</a>**
+**Note that all the timestamps in results follow <a href="https://www.w3.org/TR/NOTE-datetime">ISO 8601</a><br>**
+
+**Also note that sometimes the response might be slow - because heroku shuts down it's dynos after a certain interval of inactivity and it has to restart when a request is made in such a state**
 
 ### API Endpoint
 The `/api` endpoint serves the whole available data in the following JSON format(this is a rough format):
@@ -114,11 +116,16 @@ curl "https://covid19-kerala-api.herokuapp.com/api/location?date=>01-04-2020" | 
 ---
 ##### Combination
 We can also combine these parameters for querying specific entries:
+
+Getting the total summary from the latest data:-
+```bash
+curl "https://covid19-kerala-api.herokuapp.com/api/location?loc=total&date=latest" | jq
+```
+
+Retrieving the data of Ernakulam and Kannur districts for all dates after 4th April 2020 till latest timestamp.
 ```bash
 curl "https://covid19-kerala-api.herokuapp.com/api/location?date=>04-04-2020&loc=ernakulam&loc=kannur" | jq
 ```
-
-The above query will retrieve the data of Ernakulam and Kannur districts for all dates after 4th April 2020 till latest timestamp.
 
 ### Timeline Endpoint
 The `/timeline` endpoint serves the timeline of the number of cases in each district[WIP]. An example response format:
@@ -142,6 +149,7 @@ curl "https://covid19-kerala-api.herokuapp.com/api/timeline" | jq
 ```
 
 # Contributing
+This is a general idea about the structure I have used. I'll happily accept new contributions and ideas. Make sure you check out the issues, or raise one and follow the [contribution guidelines](https://github.com/yedhink/covid19-kerala-api/blob/master/CONTRIBUTING.md), and make your PR(**raise issue before PR or claim already existing issue**).
 
 ## Libraries
 ### Golang
@@ -217,8 +225,6 @@ cd .. && make build
     └── index.html--------------------->Frontpage
     └── assets/------------------------>No css yet. Just favicons
 ```
-
-That's a general idea about the structure I have used. I'll happily accept new contributions and ideas. Make sure you check out the issues, or raise one and follow the [contribution guidelines](https://github.com/yedhink/covid19-kerala-api/blob/master/CONTRIBUTING.md), and make your PR(**raise issue before PR or claim already existing issue**).
 
 # License
 Use this repo in the name of *Freeeeeedommmmmmmm!!* and open source. or this would do - [license](https://github.com/yedhink/covid19-kerala-api/blob/master/LICENSE)

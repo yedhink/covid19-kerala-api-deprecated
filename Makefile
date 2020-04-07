@@ -1,10 +1,10 @@
 SCRIPTS="scripts/"
 PROJECT_ROOT=$(CURDIR)
-PIPENV_ERROR=\e[1;31mActivate pipenv shell first from scripts/ dir\nThen cd .. and make build$<\e[0m
+PIPENV_ERROR=\e[1;31mActivate pipenv shell first from project root\nThen do make build$<\e[0m
 
 init:
 	go mod vendor
-	cd $(SCRIPTS);pipenv install
+	pipenv install
 
 build:
 ifneq ($(PIPENV_ACTIVE), 1)

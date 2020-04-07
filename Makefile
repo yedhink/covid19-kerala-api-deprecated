@@ -1,4 +1,5 @@
 build:
+	go mod vendor
 	go build -mod=vendor -v -o bin/covid19keralaapi cmd/covid19keralaapi/main.go
 	PORT=5000 bin/covid19keralaapi
 

@@ -149,7 +149,7 @@ curl "https://covid19-kerala-api.herokuapp.com/api/timeline" | jq
 ```
 
 # Contributing
-This is a general idea about the structure I have used. I'll happily accept new contributions and ideas. Make sure you check out the issues, or raise one and follow the [contribution guidelines](https://github.com/yedhink/covid19-kerala-api/blob/master/CONTRIBUTING.md), and make your PR(**raise issue before PR or claim already existing issue**).
+This is a general idea about the structure I have used. I'll happily accept new contributions and ideas. Make sure you check out the [issues](https://github.com/yedhink/covid19-kerala-api/issues), or raise one and follow the [contribution guidelines](https://github.com/yedhink/covid19-kerala-api/blob/master/CONTRIBUTING.md), and make your PR(**raise issue before PR or claim already existing issue**).
 
 ## Libraries
 ### Golang
@@ -229,4 +229,4 @@ Once everything is setup, essentially running `make build` from project root can
 ```
 
 # License
-Use this repo in the name of *Freeeeeedommmmmmmm!!* and open source. or this would do - [license](https://github.com/yedhink/covid19-kerala-api/blob/master/LICENSE)
+Use this repo in the name of *Freeeeeedommmmmmmm!!* and open source. or this would do - [license](https://github.com/yedhink/covid19-kerala-api/blob/master/LICENSE.txt)

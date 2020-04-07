@@ -2,7 +2,7 @@
 <h3 align="center"><a href="https://covid19-kerala-api.herokuapp.com">https://covid19-kerala-api.herokuapp.com</a><h3>
 
 ## Why?
-Manually collecting and updating the data from the pdf sources is time consuming and energy draining! Make use of this API to **automatically** retrieve the **latest** as well some of the old COVID19 data specific to Kerala in JSON format, from your applications with ease.
+Manually collecting and updating the data from the pdf sources is time consuming and energy draining! Make use of this API to **automatically** retrieve the **latest** as well some of the old COVID19 data specific to Kerala in JSON format, into your applications with ease.
 
 ---
 
@@ -30,7 +30,7 @@ Currently the API auto collects the data from <a href="http://dhs.kerala.gov.in/
 ## API Details
 The API currently contains three endpoints `/api`, `/timeline` and `/location` at the moment.
 
-The data can be viewed from the browser by visiting say `https://covid19-kerala-api.herokuapp.com/api` or just use `curl` magic sugar coated by `jq` to view neat response:
+The data can be viewed from the browser by visiting say `https://covid19-kerala-api.herokuapp.com/api` or just use `curl` magic, sugar coated by `jq` to view a neat response:
 ```bash
 curl "https://covid19-kerala-api.herokuapp.com/api" | jq
 ```
@@ -83,11 +83,11 @@ We can specify an array of locations to be filtered out:
 ```bash
 curl "https://covid19-kerala-api.herokuapp.com/api/location?loc=kasaragod&loc=ernakulam" | jq
 ```
-The above request provides the data of Kasaragod and Ernakulam for all the dates from start till end.
+The above request provides the data pertaining to Kasaragod and Ernakulam districts from the oldest timestamp till latest.
 
 ---
 ##### Date
-We can also filter using `date={dd-mm-yyyy|dd/mm/yyyy}` formatted parameter. Date supports inclusion of `<` and `>` characters in the query and even a keyword `latest` to get the latest data only.
+We can also filter using `date={dd-mm-yyyy|dd/mm/yyyy}` formatted parameter. Here the `date` supports inclusion of `<` and `>` characters in the query and even a keyword `latest` to get the latest data only.
 
 
 Retrieve the data of all locations for the date 1st April 2020:
@@ -95,7 +95,7 @@ Retrieve the data of all locations for the date 1st April 2020:
 curl "https://covid19-kerala-api.herokuapp.com/api/location?date=01-04-2020" | jq
 ```
 
-Retrieve the data of all locations for all dates greater than 1st April 2020 till last updated date:
+Retrieve the data from all locations with dates(timestamp) greater than 1st April 2020 till the last updated date:
 ```bash
 curl "https://covid19-kerala-api.herokuapp.com/api/location?date=>01-04-2020" | jq
 ```
@@ -106,7 +106,7 @@ We can also combine these parameters for querying specific entries:
 curl "https://covid19-kerala-api.herokuapp.com/api/location?date=>04-04-2020&loc=ernakulam&loc=kannur" | jq
 ```
 
-The following query will retrieve the data of Ernakulam and Kannur districts for all dates after 4th April 2020 till latest available date.
+The above query will retrieve the data of Ernakulam and Kannur districts for all dates after 4th April 2020 till latest timestamp.
 
 ### Timeline Endpoint
 The `/timeline` endpoint serves the timeline of the number of cases in each district[WIP]. An example response format:
@@ -130,6 +130,9 @@ curl "https://covid19-kerala-api.herokuapp.com/api/timeline" | jq
 ```
 
 # Contributing
+
+## Running
+> I 'gnu' that `make` is just really awesome the moment I laid my hands on it
 
 ## Libraries
 ### Golang

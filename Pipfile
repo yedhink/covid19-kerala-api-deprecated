@@ -9,6 +9,7 @@ verify_ssl = true
 pdftotext = "*"
 jsonpickle = "*"
 flake8 = "*"
+yapf = "*"
 
 [requires]
 python_version = "3.8"

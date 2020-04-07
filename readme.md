@@ -180,6 +180,8 @@ Then run the server(note that the executable will stored in bin/):-
 ```bash
 cd .. && make build
 ```
+Once everything is setup, essentially running `make build` from project root can restart the server everytime.
+
 ---
 
 ## Project Structure

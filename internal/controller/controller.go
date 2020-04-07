@@ -15,9 +15,7 @@ import (
 func getLocations(v map[string]interface{}) map[string][]string {
 	d := make(map[string][]string)
 	for k,_ := range v {
-		if k != "total" {
-			d["locations"] = append(d["locations"],k)
-		}
+		d["locations"] = append(d["locations"],k)
 	}
 	sort.Strings(d["locations"])
 	return d

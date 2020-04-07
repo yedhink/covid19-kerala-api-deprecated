@@ -14,6 +14,9 @@
 # os junk
 **/*fuse_hidden*
 
+# go mod vendor
+vendor/*
+
 scripts/pdftotext.cpython-38-x86_64-linux-gnu.so
 scripts/jsonpickle/*
 

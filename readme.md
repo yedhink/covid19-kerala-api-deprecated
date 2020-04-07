@@ -6,21 +6,31 @@ Manually collecting and updating the data from the pdf sources is time consuming
 
 ---
 
-## Table of Contents (Optional)
+## Table of Contents
 
-- [Source](#source)
-- [Usage](#usage)
-- [API](#api)
-- [Contributing](#contributing)
-- [Team](#team)
-- [FAQ](#faq)
-- [Support](#support)
-- [License](#license)
+* [Source](#source)
+* [Usage](#usage)
+* [API Details](#api-details)
+    * [API Endpoint](#api-endpoint)
+        * [Example](#example)
+    * [Location Endpoint](#location-endpoint)
+        * [Example](#example-1)
+            * [Loc](#loc)
+            * [Date](#date)
+            * [Combination](#combination)
+    * [Timeline Endpoint](#timeline-endpoint)
+* [Contributing](#contributing)
+    * [Libraries](#libraries)
+        * [Golang](#golang)
+        * [Python](#python)
+    * [Running](#running)
+    * [Project Structure](#project-structure)
+* [License](#license)
 
 ---
 
 ## Source
-Currently the API auto collects the data from <a href="http://dhs.kerala.gov.in/">http://dhs.kerala.gov.in/</a>. This site provides reliable data in an unreliable format. Thus some of the data from certain dates are still missing in the dataset. We are actively trying to find a solution to extract data from some of the inconsistent data PDF's.
+Currently the API auto collects the data from <a href="http://dhs.kerala.gov.in/">http://dhs.kerala.gov.in/</a>. This site provides reliable data in a very unreliable and inconsistent format. Thus some of the data from certain dates are still missing in the dataset. Currently trying to find a solution to extract data from some of the inconsistent data PDF's.
 
 ## Usage
 > All you have to do is make a simple GET request to get the indented JSON
@@ -37,26 +47,28 @@ curl "https://covid19-kerala-api.herokuapp.com/api" | jq
 **Note that all the timestamps in results follow <a href="https://www.w3.org/TR/NOTE-datetime">ISO 8601</a>**
 
 ### API Endpoint
-The `/api` endpoint serves the whole available data in the following JSON format:
+The `/api` endpoint serves the whole available data in the following JSON format(this is a rough format):
 ```json
 {
-    "oldest-timestamp" : {
-        "district1": {
-            "cases-deaths-etc": int(cases),
-            .
-            .
-            .
+    {oldest-timestamp} : {
+        {district1}: {
+            {cases-deaths-etc}: {int(cases)},
+            ...,
+            ...,
+            ...,
             "other_districts": {
-                "district" : number_of_persons
+                {district} : {number_of_persons}
             }
         },
-        "district2":{...}
+        {district2}:{...}
+        ...,
+        "total":{...}
     },
-    .
-    .
-    .
-    "latest-timestamp": {
-        similar-to-above-entry-but-diff-data-values
+    ...,
+    ...,
+    ...,
+    {latest-timestamp}: {
+        {similar-to-above-entry-but-data-values-corresponds-to-timestamp}
     }
 }
 ```
@@ -68,12 +80,12 @@ curl "https://covid19-kerala-api.herokuapp.com/api" | jq
 
 ### Location Endpoint
 The `/api/location` endpoint can serve a variety of data based on the query parameters that the user provides.
-The default response is an array of the districts:
+The default response is an array of the possible location values acceptable by `loc` parameter:
 ```bash
 curl "https://covid19-kerala-api.herokuapp.com/api/location" | jq
 ```
 
-The parameters that are currently supported include `loc`(specify location) and `date`(specify date of data).
+The parameters that are currently supported include `loc`(specify location) and `date`(specify date/timestamp).
 
 #### Example
 
@@ -120,19 +132,16 @@ curl "https://covid19-kerala-api.herokuapp.com/api/timeline" | jq
         "timeline": {
             "2020-02-28T00:00:00Z": 0,
             "...": 1,
-            .
-            .
-            .
-            "latest-timestamp": 256
+            ...,
+            ...,
+            ...,
+            {latest-timestamp}: 256
         }
     }
 }
 ```
 
 # Contributing
-
-## Running
-> I 'gnu' that `make` is just really awesome the moment I laid my hands on it
 
 ## Libraries
 ### Golang
@@ -147,10 +156,27 @@ curl "https://covid19-kerala-api.herokuapp.com/api/timeline" | jq
 - jsonpickle - encode/decode objects into json
 ---
 
+## Running
+> *i 'gnu' that `make` is gods own creation, the moment i laid my hands on it*
+
+Start off by installing the go and python packages - only needs to be done the first time:-
+```bash
+make init
+```
+
+The python script is invoked from within the gin-server. Therefore activate the pipenv shell first:-
+```bash
+cd scripts/ && pipenv shell
+```
+Then run the server(note that the executable will stored in bin/):-
+```bash
+cd .. && make build
+```
+---
+
 ## Project Structure
 ```
 ├── bin-------------------------------->covid19keralaapi executable
-│
 ├── cmd
 │   └── covid19keralaapi
 │       └── main.go-------------------->Entry point and initialization of all pkgs
@@ -175,14 +201,13 @@ curl "https://covid19-kerala-api.herokuapp.com/api/timeline" | jq
 │   │   ├── api_location_handler.go-|-->'/api/location' filters based on loc and date params
 │   │   ├── api_timeline_handler.go-|-->'/api/timeline' serves the TimeLine struct
 │   │   ├── root_handler.go---------|-->'/' endpoint renders the html frontpage
-│   │   └── server.go---------------|-->Server running, alloting handlers to url
+│   │   └── server.go---------------|-->Server running, allotting handlers to url
 │   ├── storage
 │   │   └── storage.go----------------->PDF,json filenames, deletion of old pdf file
 │   └── website
 │       ├── error.go------------------->Custom error handler while scraping the netzz
 │       └── website.go----------------->Implements scraper functions and downloads latest data
 ├── Makefile--------------------------->For easier building and running
-├── Procfile
 ├── readme.md
 ├── scripts
 │   ├── extract-text-data.py----------->Messy script - converts pdf to json
@@ -193,7 +218,7 @@ curl "https://covid19-kerala-api.herokuapp.com/api/timeline" | jq
     └── assets/------------------------>No css yet. Just favicons
 ```
 
-That's a general idea about the structure I have used. I'll happily accept new contributions and ideas. Make sure you check out the issues, or raise one and follow the contribution guidelines, and make your PR(**raise issue before PR or claim already existing one**).
+That's a general idea about the structure I have used. I'll happily accept new contributions and ideas. Make sure you check out the issues, or raise one and follow the [contribution guidelines](https://github.com/yedhink/covid19-kerala-api/blob/master/CONTRIBUTING.md), and make your PR(**raise issue before PR or claim already existing issue**).
 
 # License
-Use this repo in the name of *Freeeeeedommmmmmmm!!* and open source. or this would do [license]()
+Use this repo in the name of *Freeeeeedommmmmmmm!!* and open source. or this would do - [license](https://github.com/yedhink/covid19-kerala-api/blob/master/LICENSE)

@@ -11,6 +11,7 @@ ifneq ($(PIPENV_ACTIVE), 1)
 	@echo -e "$(PIPENV_ERROR)"
 	@exit 1
 endif
+	go mod vendor
 	go build -mod=vendor -v -o bin/covid19keralaapi cmd/covid19keralaapi/main.go
 	PORT=5000 bin/covid19keralaapi
 

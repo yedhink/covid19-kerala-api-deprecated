@@ -12,12 +12,13 @@ import (
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 )
 
-func getLocations(v map[string]interface{}) map[string][]string {
-	d := make(map[string][]string)
+func getLocations(v map[string]interface{}) map[string]interface{} {
+	d := make(map[string]interface{})
+	d["locations"] = make([]string,0)
 	for k,_ := range v {
-		d["locations"] = append(d["locations"],k)
+		d["locations"] = append(d["locations"].([]string),k)
 	}
-	sort.Strings(d["locations"])
+	sort.Strings(d["locations"].([]string))
 	return d
 }
 

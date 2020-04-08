@@ -11,7 +11,7 @@ type TimeLine struct {
 }
 
 type Location struct{
-    Loc map[string][]string
+    Loc map[string]interface{}
 }
 
 type Data struct {
@@ -26,6 +26,6 @@ func NewTimeLine() TimeLine{
 
 func NewLocation() Location {
     var l Location
-    l.Loc = make(map[string][]string)
+    l.Loc = make(map[string]interface{})
     return l
 }

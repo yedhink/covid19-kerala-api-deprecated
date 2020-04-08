@@ -52,6 +52,7 @@ func (server *Server) Location(st *Storage) gin.HandlerFunc {
 		c.Bind(&l)
 		if len(l.Loc) > 0 {
 			d := make(map[string]interface{})
+			d["success"] = true
 			for key,value := range server.JsonData.All.Data{
 				if l.Date != "" {
 					if validateDate(key,l.Date,st) {
@@ -67,6 +68,7 @@ func (server *Server) Location(st *Storage) gin.HandlerFunc {
 		} else {
 			if l.Date != "" {
 				d := make(map[string]interface{})
+				d["success"] = true
 				for key,value := range server.JsonData.All.Data{
 					if validateDate(key,l.Date,st) {
 						d[key] = value
@@ -74,6 +76,7 @@ func (server *Server) Location(st *Storage) gin.HandlerFunc {
 				}
 				c.IndentedJSON(200,d)
 			} else {
+				server.JsonData.Districts.Loc["success"] = true
 				c.IndentedJSON(200,server.JsonData.Districts.Loc)
 			}
 		}

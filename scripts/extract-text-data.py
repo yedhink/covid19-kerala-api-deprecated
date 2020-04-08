@@ -12,12 +12,12 @@ optional arguments:
 import pdftotext
 import glob
 import os
-import json
 import argparse
 import re
 from itertools import chain
 import io
 from datetime import datetime
+from utils import filters
 import jsonpickle
 jsonpickle.set_encoder_options("json", sort_keys=True, indent=4)
 
@@ -206,29 +206,21 @@ def extract_text_data(latest_pdf):
                 lines = ""
             else:
                 lines += char
-    # pure regex witchcraftery - currently captures timestamp and annex1 and district wise tables contents
-    file_date = re.findall(r'Date:(?:\s)?(\d+)/(\d+)/(\d+)', "\n".join(data),
-                           re.DOTALL)
-    annex1 = re.findall(r'District(?:\s+)?under.*on today.(.*?)(Total.*?\n)',
-                        "\n".join(data), re.DOTALL)
-    district = re.findall(
-        r'District(?:\s+)(?:No\. of positive.*?[\n\r])(.*)(Total.*?\n)',
-        "\n".join(data), re.DOTALL)
+    data = "\n".join(data)
+    file_date = filters.extract_date(data)
+    annex1_table = filters.extract_annex1(data)
+    district_table = filters.extract_district(data)
     try:
         # convert to Standard ISO 8601 format
         timestamp = "{}-{}-{}T00:00:00Z".format(file_date[0][2],
                                                 file_date[0][1],
                                                 file_date[0][0])
-        annex1_table = annex1[0][0].strip().split("\n")
-        annex1_table.extend(annex1[0][1].strip().split("\n"))
         # print(f"current file : {latest_pdf}")
     except IndexError:
         # if the pdf file cant be read as text
         return "", "", ""
-    if len(district) == 0:
+    if len(district_table) == 0:
         district_table = ""
-    else:
-        district_table = "".join(district[0]).split("\n")[:-1]
     return annex1_table, district_table, timestamp
 
 

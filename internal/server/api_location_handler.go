@@ -27,23 +27,10 @@ func parseDate(k string, s string) (time.Time, time.Time) {
 	keyDate, _ := time.Parse(time.RFC3339, k)
 	return keyDate, userDate
 }
-
-func validateDate(k string, d string, st *Storage) bool {
-	switch d[:1] {
-	case "<":
-		kD, uD := parseDate(k, d[1:])
-		return kD.Before(uD)
-	case ">":
-		kD, uD := parseDate(k, d[1:])
-		return kD.After(uD)
-	case "l":
-		// latest data pdf
-		date := GetLocalPdfDate(st.BasePath)
-		kD, uD := parseDate(k, date)
-		return kD.Equal(uD)
-	default:
-		kD, uD := parseDate(k, d)
-		return kD.Equal(uD)
+	// if the date is not correctly formatted
+	case false:
+		d["success"] = false
+		d["message"] = "Invalid Date Format as Parameter"
 	}
 }
 

@@ -18,6 +18,14 @@ type Data struct {
     Data map[string]interface{}
 }
 
+func NewData() Data {
+    var d Data
+    d.Data = make(map[string]interface{})
+	d.Data["success"]=false
+    d.Data = make(map[string]interface{})
+    return d
+}
+
 func NewTimeLine() TimeLine{
     var t TimeLine
     t.TimeLine = make(map[string]interface{})

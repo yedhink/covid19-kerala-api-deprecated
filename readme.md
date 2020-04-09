@@ -181,11 +181,16 @@ The python script is invoked from within the gin-server. Therefore activate the 
 ```bash
 pipenv shell
 ```
-Then run the server(note that the executable will be stored in bin/):-
+Then run the server(note that the executable will be stored in bin/):-  
+To run in production mode
 ```bash
 make build
 ```
-Once everything is setup, essentially running `make build` from project root can restart the server everytime.
+To run in development mode (i.e. gin server will be in development mode)
+```bash
+make run
+```
+Once everything is setup, essentially running `make build` or `make run` (as per requirement) from project root can restart the server everytime.
 
 ---
 

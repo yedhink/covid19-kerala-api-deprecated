@@ -1,50 +1,51 @@
 package server
+
 import (
-	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 	"time"
+
 	"github.com/gin-gonic/gin"
+	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 )
 
-type Locations struct{
-	Loc []string `form:"loc"`
-	Date string `form:"date"`
+type Locations struct {
+	Loc  []string `form:"loc"`
+	Date string   `form:"date"`
 }
 
-func filterByLoc(value map[string]interface{},key string,d map[string]interface{},userLoc []string) {
-	for _,loc := range userLoc {
+func filterByLoc(value map[string]interface{}, key string, d map[string]interface{}, userLoc []string) {
+	for _, loc := range userLoc {
 		d[key].(map[string]interface{})[loc] = value[loc]
 	}
 }
 
-func parseDate(k string, s string) (time.Time,time.Time) {
-	userDate,err := time.Parse("02-01-2006", s)
+func parseDate(k string, s string) (time.Time, time.Time) {
+	userDate, err := time.Parse("02-01-2006", s)
 	if err != nil {
-		userDate,_ =  time.Parse("02/01/2006", s)
+		userDate, _ = time.Parse("02/01/2006", s)
 	}
 	userDate.Format(time.RFC3339)
-	keyDate,_ := time.Parse(time.RFC3339,k)
-	return keyDate,userDate
+	keyDate, _ := time.Parse(time.RFC3339, k)
+	return keyDate, userDate
 }
 
-func validateDate(k string,d string,st *Storage) bool {
+func validateDate(k string, d string, st *Storage) bool {
 	switch d[:1] {
 	case "<":
-		kD,uD := parseDate(k,d[1:])
+		kD, uD := parseDate(k, d[1:])
 		return kD.Before(uD)
 	case ">":
-		kD,uD := parseDate(k,d[1:])
+		kD, uD := parseDate(k, d[1:])
 		return kD.After(uD)
 	case "l":
 		// latest data pdf
 		date := GetLocalPdfDate(st.BasePath)
-		kD,uD := parseDate(k, date)
+		kD, uD := parseDate(k, date)
 		return kD.Equal(uD)
 	default:
-		kD,uD := parseDate(k,d)
+		kD, uD := parseDate(k, d)
 		return kD.Equal(uD)
 	}
 }
-
 
 func (server *Server) Location(st *Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -53,31 +54,35 @@ func (server *Server) Location(st *Storage) gin.HandlerFunc {
 		if len(l.Loc) > 0 {
 			d := make(map[string]interface{})
 			d["success"] = true
-			for key,value := range server.JsonData.All.Data{
+			for key, value := range server.JsonData.All.Data {
+				// since we cant assert a value interface of type bool as map[string]interface{}
+				if key == "success" {
+					continue
+				}
 				if l.Date != "" {
-					if validateDate(key,l.Date,st) {
-						d[key] = make(map[string]interface{},len(l.Loc))
-						filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
+					if validateDate(key, l.Date, st) {
+						d[key] = make(map[string]interface{}, len(l.Loc))
+						filterByLoc(value.(map[string]interface{}), key, d, l.Loc)
 					}
 				} else {
-					d[key] = make(map[string]interface{},len(l.Loc))
-					filterByLoc(value.(map[string]interface{}),key,d,l.Loc)
+					d[key] = make(map[string]interface{}, len(l.Loc))
+					filterByLoc(value.(map[string]interface{}), key, d, l.Loc)
 				}
 			}
-			c.IndentedJSON(200,d)
+			c.IndentedJSON(200, d)
 		} else {
 			if l.Date != "" {
 				d := make(map[string]interface{})
 				d["success"] = true
-				for key,value := range server.JsonData.All.Data{
-					if validateDate(key,l.Date,st) {
+				for key, value := range server.JsonData.All.Data {
+					if key != "success" && validateDate(key, l.Date, st) {
 						d[key] = value
 					}
 				}
-				c.IndentedJSON(200,d)
+				c.IndentedJSON(200, d)
 			} else {
 				server.JsonData.Districts.Loc["success"] = true
-				c.IndentedJSON(200,server.JsonData.Districts.Loc)
+				c.IndentedJSON(200, server.JsonData.Districts.Loc)
 			}
 		}
 	}

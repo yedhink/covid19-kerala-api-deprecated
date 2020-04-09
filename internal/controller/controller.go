@@ -46,7 +46,7 @@ func genarateTimeline(st *Storage,d *Data,t *TimeLine,l *Location) map[string]in
 
 func Deserialize(st *Storage) DataSet{
 	var dataset DataSet
-	var d Data
+	var d = NewData()
 	var t = NewTimeLine()
 	var l = NewLocation()
 	// Open our jsonFile

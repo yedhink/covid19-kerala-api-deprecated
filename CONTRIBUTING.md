@@ -49,7 +49,7 @@ At this point, you should switch back to your master branch and make sure it's
 up to date with Active Admin's master branch:
 
 ```sh
-git remote add upstream git@github.com:fisatsdc/fsdc.git
+git remote add upstream git@github.com:yedhink/covid19-kerala-api.git
 git checkout master
 git pull upstream master
 ```

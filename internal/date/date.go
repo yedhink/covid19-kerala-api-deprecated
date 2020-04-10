@@ -2,14 +2,23 @@ package date
 
 import (
 	"time"
+
 	. "github.com/yedhink/covid19-kerala-api/internal/storage"
 )
 
 const (
+	//              mm-dd-yyyy
 	hyphenLayout = "02-01-2006"
 	slashLayout  = "02/01/2006"
 	nilLayout    = "00-00-0000"
 )
+
+// returns the date in zulu date format
+// eg :- 2020-03-27T00:00:00Z
+func ZuluDateFormat(path string) string {
+	date, _ := time.Parse(hyphenLayout, path)
+	return date.Format(time.RFC3339)
+}
 
 // checks if user param date contains a valid formatted date
 // 02-04-20 or 02/04/20 etc are invalid

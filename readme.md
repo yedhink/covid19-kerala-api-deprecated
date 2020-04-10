@@ -11,6 +11,7 @@ Manually collecting and updating the data from the pdf sources is time consuming
 * [Source](#source)
 * [Usage](#usage)
 * [API Details](#api-details)
+    * [Notes](#notes)
     * [API Endpoint](#api-endpoint)
         * [Example](#example)
     * [Location Endpoint](#location-endpoint)
@@ -44,14 +45,17 @@ The data can be viewed from the browser by visiting say `https://covid19-kerala-
 ```bash
 curl "https://covid19-kerala-api.herokuapp.com/api" | jq
 ```
-**Note that all the timestamps in results follow <a href="https://www.w3.org/TR/NOTE-datetime">ISO 8601</a><br>**
 
-**Also note that sometimes the response might be slow - because heroku shuts down it's dynos after a certain interval of inactivity and it has to restart when a request is made in such a state**
+### Notes
+* **All json responses consist of a `success` key, which denotes whether the user request was valid or whether it retrieved any data**
+* **All the timestamps in results follow <a href="https://www.w3.org/TR/NOTE-datetime">ISO 8601</a><br>**
+* **Sometimes the response might be slow - because heroku shuts down it's dynos after a certain interval of inactivity and it has to restart when a request is made in such a state**
 
 ### API Endpoint
 The `/api` endpoint serves the whole available data in the following JSON format(this is a rough format):
 ```json
 {
+	"success": true | false, // whether the request is valid or not
     {oldest-timestamp} : {
         {district1}: {
             {cases-deaths-etc}: {int(cases)},
@@ -111,7 +115,7 @@ curl "https://covid19-kerala-api.herokuapp.com/api/location?date=01-04-2020" | j
 
 Retrieve the data from all locations with dates(timestamp) greater than 1st April 2020 till the last updated date:
 ```bash
-curl "https://covid19-kerala-api.herokuapp.com/api/location?date=>01-04-2020" | jq
+curl "https://covid19-kerala-api.herokuapp.com/api/location?date=>07-04-2020" | jq
 ```
 ---
 ##### Combination
@@ -134,6 +138,7 @@ curl "https://covid19-kerala-api.herokuapp.com/api/timeline" | jq
 ```
 ```json
 {
+	"success": true,
     "total_no_of_positive_cases_admitted": {
         "latest": 256,
         "timeline": {
@@ -191,11 +196,13 @@ Once everything is setup, essentially running `make build` from project root can
 │   └── covid19keralaapi
 │       └── main.go-------------------->Entry point and initialization of all pkgs
 ├── data
-│   ├── 05-04-2020.pdf----------------->Latest pdf data collected
+│   ├── 09-04-2020.pdf----------------->Latest pdf data collected
 │   └── data.json---------------------->Latest json data extracted from the above pdf
 ├── go.mod---------------------------| 
 ├── go.sum---------------------------|->Go Modules tracker
 ├── internal--------------------------->Pkgs for internal use only
+│   ├── date
+│   │   └── date.go-------------------->All date related functions and validations
 │   ├── controller
 │   │   └── controller.go-------------->Deserialization, Timeline Generation, Location Array Gen
 │   ├── logger
@@ -207,6 +214,7 @@ Once everything is setup, essentially running `make build` from project root can
 │   ├── scraper
 │   │   └── scraper.go----------------->Interface to scrape any website with limited attrs
 │   ├── server
+│   │   ├── no_route_handler.go-----|-->handles invalid routes
 │   │   ├── api_handler.go----------|-->'/api' serves the server.JsonData.All.Data
 │   │   ├── api_location_handler.go-|-->'/api/location' filters based on loc and date params
 │   │   ├── api_timeline_handler.go-|-->'/api/timeline' serves the TimeLine struct

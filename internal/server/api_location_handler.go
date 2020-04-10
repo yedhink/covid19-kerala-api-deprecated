@@ -26,7 +26,7 @@ func LocDateFilter(q *Query, d map[string]interface{}, st *Storage, apiData map[
 	switch IsDate(q.Date) {
 	case true:
 		for key, value := range apiData {
-			if ValidDate(key, q.Date, st) {
+			if key != "success" && ValidDate(key, q.Date, st) {
 				// if loc length > 0 then only filterByLoc
 				if locExist == true {
 					d[key] = make(map[string]interface{}, len(q.Loc))
@@ -63,8 +63,10 @@ func (server *Server) Location(st *Storage) gin.HandlerFunc {
 		// just filter by loc parameter
 		case length > 0 && q.Date == "":
 			for key, value := range server.JsonData.All.Data {
-				d[key] = make(map[string]interface{}, len(q.Loc))
-				filterByLoc(value.(map[string]interface{}), d[key].(map[string]interface{}), q.Loc)
+				if key != "success" {
+					d[key] = make(map[string]interface{}, len(q.Loc))
+					filterByLoc(value.(map[string]interface{}), d[key].(map[string]interface{}), q.Loc)
+				}
 			}
 		// filter by both loc and date params
 		case length > 0 && q.Date != "":

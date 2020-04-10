@@ -212,9 +212,9 @@ def extract_text_data(latest_pdf):
     district_table = filters.extract_district(data)
     try:
         # convert to Standard ISO 8601 format
-        timestamp = "{}-{}-{}T00:00:00Z".format(file_date[0][2],
-                                                file_date[0][1],
-                                                file_date[0][0])
+        timestamp = datetime.strptime(
+            "{0}-{1}-{2}".format(*[x.lstrip('0') for x in file_date[0]]),
+            "%d-%m-%Y").isoformat() + "Z"
         # print(f"current file : {latest_pdf}")
     except IndexError:
         # if the pdf file cant be read as text

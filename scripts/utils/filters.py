@@ -14,7 +14,7 @@ def extract_annex1(data):
     flag = False
     for line in data.split('\n'):
         line = line.strip()
-        if re.match(r'^on today', line) is not None:
+        if 'on today ' in line:
             flag = True
             continue
         if flag and re.match(

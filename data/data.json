@@ -4150,5 +4150,148 @@
             "no_of_symptomatic_persons_hospitalized_as_on_today": 7,
             "other_districts": {}
         }
+    },
+    "2020-04-11T00:00:00Z": {
+        "alappuzha": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 2,
+            "no_of_persons_under_home_isolation_as_on_today": 7169,
+            "no_of_persons_under_observation_as_on_today": 7181,
+            "no_of_positive_cases_admitted": 3,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 12,
+            "other_districts": {}
+        },
+        "ernakulam": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 4,
+            "no_of_persons_under_home_isolation_as_on_today": 2711,
+            "no_of_persons_under_observation_as_on_today": 2735,
+            "no_of_positive_cases_admitted": 7,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 24,
+            "other_districts": {
+                "malappuram": 1
+            }
+        },
+        "idukki": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 0,
+            "no_of_persons_under_home_isolation_as_on_today": 4363,
+            "no_of_persons_under_observation_as_on_today": 4371,
+            "no_of_positive_cases_admitted": 1,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 8,
+            "other_districts": {}
+        },
+        "kannur": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 21,
+            "no_of_persons_under_home_isolation_as_on_today": 7781,
+            "no_of_persons_under_observation_as_on_today": 7881,
+            "no_of_positive_cases_admitted": 44,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 100,
+            "other_districts": {
+                "kasaragod": 10
+            }
+        },
+        "kasaragod": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 13,
+            "no_of_persons_under_home_isolation_as_on_today": 10337,
+            "no_of_persons_under_observation_as_on_today": 10600,
+            "no_of_positive_cases_admitted": 123,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 263,
+            "other_districts": {}
+        },
+        "kollam": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 1,
+            "no_of_persons_under_home_isolation_as_on_today": 6454,
+            "no_of_persons_under_observation_as_on_today": 6464,
+            "no_of_positive_cases_admitted": 7,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 10,
+            "other_districts": {}
+        },
+        "kottayam": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 3,
+            "no_of_persons_under_home_isolation_as_on_today": 2589,
+            "no_of_persons_under_observation_as_on_today": 2593,
+            "no_of_positive_cases_admitted": 0,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 4,
+            "other_districts": {}
+        },
+        "kozhikode": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 4,
+            "no_of_persons_under_home_isolation_as_on_today": 17364,
+            "no_of_persons_under_observation_as_on_today": 17387,
+            "no_of_positive_cases_admitted": 8,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 23,
+            "other_districts": {
+                "kannur": 1
+            }
+        },
+        "malappuram": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 123,
+            "no_of_persons_under_home_isolation_as_on_today": 13789,
+            "no_of_persons_under_observation_as_on_today": 13988,
+            "no_of_positive_cases_admitted": 16,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 199,
+            "other_districts": {}
+        },
+        "palakkad": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 7,
+            "no_of_persons_under_home_isolation_as_on_today": 16359,
+            "no_of_persons_under_observation_as_on_today": 16392,
+            "no_of_positive_cases_admitted": 3,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 33,
+            "other_districts": {}
+        },
+        "pathanamthitta": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 1,
+            "no_of_persons_under_home_isolation_as_on_today": 6463,
+            "no_of_persons_under_observation_as_on_today": 6477,
+            "no_of_positive_cases_admitted": 8,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 14,
+            "other_districts": {}
+        },
+        "thiruvananthapuram": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 21,
+            "no_of_persons_under_home_isolation_as_on_today": 4282,
+            "no_of_persons_under_observation_as_on_today": 4383,
+            "no_of_positive_cases_admitted": 2,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 101,
+            "other_districts": {}
+        },
+        "thrissur": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 0,
+            "no_of_persons_under_home_isolation_as_on_today": 12323,
+            "no_of_persons_under_observation_as_on_today": 12343,
+            "no_of_positive_cases_admitted": 5,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 20,
+            "other_districts": {}
+        },
+        "total": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 201,
+            "no_of_persons_under_home_isolation_as_on_today": 122676,
+            "no_of_persons_under_observation_as_on_today": 123490,
+            "no_of_positive_cases_admitted": 228,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 814,
+            "other_districts": {}
+        },
+        "wayanad": {
+            "no_of_persons_discharged_from_home_isolation": 0,
+            "no_of_persons_hospitalized_today": 1,
+            "no_of_persons_under_home_isolation_as_on_today": 10692,
+            "no_of_persons_under_observation_as_on_today": 10695,
+            "no_of_positive_cases_admitted": 1,
+            "no_of_symptomatic_persons_hospitalized_as_on_today": 3,
+            "other_districts": {}
+        }
     }
 }

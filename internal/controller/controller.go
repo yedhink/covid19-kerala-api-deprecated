@@ -23,7 +23,7 @@ func getLocations(v map[string]interface{}) map[string]interface{} {
 }
 
 // generate a timeline object and invoke the getLocations function for generating arr of locations
-func genarateTimeline(st *Storage, d *Data, t *TimeLine, l *Location) map[string]interface{} {
+func genarateTimeline(st *Storage, d *Data, t *TimeLine, l *Location) {
 	// messily generates a timeline and stores into a map
 	// requires refactoring into struct model
 
@@ -45,7 +45,6 @@ func genarateTimeline(st *Storage, d *Data, t *TimeLine, l *Location) map[string
 
 	// generate the location array that can be used in /location handler
 	l.Loc = getLocations(latest_obj)
-	return t.TimeLine
 }
 
 func Deserialize(st *Storage) DataSet {

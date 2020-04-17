@@ -72,6 +72,6 @@ func (server *Server) Location(st *Storage) gin.HandlerFunc {
 		case length > 0 && q.Date != "":
 			LocDateFilter(&q, d, st, server.JsonData.All.Data, true)
 		}
-		c.IndentedJSON(200, d)
+		c.JSON(200, d)
 	}
 }

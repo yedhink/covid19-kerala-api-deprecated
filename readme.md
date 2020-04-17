@@ -50,6 +50,7 @@ curl "https://covid19-kerala-api.herokuapp.com/api" | jq
 * **All json responses consist of a `success` key, which denotes whether the user request was valid or whether it retrieved any data**
 * **All the timestamps in results follow <a href="https://www.w3.org/TR/NOTE-datetime">ISO 8601</a><br>**
 * **Sometimes the response might be slow - because heroku shuts down it's dynos after a certain interval of inactivity and it has to restart when a request is made in such a state**
+* **The JSON responses are not indented for performance sake. All examples are shown in indented format for readability only**
 
 ### API Endpoint
 The `/api` endpoint serves the whole available data in the following JSON format(this is a rough format):
